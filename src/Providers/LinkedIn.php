@@ -1,21 +1,21 @@
 <?php
 
 /*
- * This file is part of fof/oauth.
+ * This file is part of lstechneighbor/flarum-tcp-oidc.
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) Larry Squitieri.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace FoF\OAuth\Providers;
+namespace LSTechNeighbor\TCPOIDC\Providers;
 
 use Flarum\Forum\Auth\Registration;
 use Flarum\Settings\SettingsRepositoryInterface;
-use FoF\OAuth\Provider;
-use FoF\OAuth\Providers\Custom\LinkedIn\Provider\LinkedIn as LinkedInProvider;
+use LSTechNeighbor\TCPOIDC\Provider;
 use League\OAuth2\Client\Provider\AbstractProvider;
+use League\OAuth2\Client\Provider\GenericProvider;
 
 class LinkedIn extends Provider
 {
@@ -29,35 +29,42 @@ class LinkedIn extends Provider
         $this->settings = $settings;
     }
 
-    /**
-     * @var LinkedInProvider
-     */
-    protected $provider;
-
     public function name(): string
     {
-        return 'linkedin';
+        return 'tcp';
     }
 
     public function link(): string
     {
-        return 'https://linkedin.com/developers/apps/new';
+        return 'https://github.com/lstechneighbor/flarum-tcp-oidc';
     }
 
     public function fields(): array
     {
         return [
+            'tcp_url'       => 'required',
             'client_id'     => 'required',
             'client_secret' => 'required',
         ];
     }
 
+    public function icon(): string
+    {
+        return 'fas fa-key';
+    }
+
     public function provider(string $redirectUri): AbstractProvider
     {
-        return $this->provider = new LinkedInProvider([
-            'clientId'        => $this->getSetting('client_id'),
-            'clientSecret'    => $this->getSetting('client_secret'),
-            'redirectUri'     => $redirectUri,
+        $tcpUrl = $this->getSetting('tcp_url');
+        
+        return new GenericProvider([
+            'clientId'                => $this->getSetting('client_id'),
+            'clientSecret'            => $this->getSetting('client_secret'),
+            'redirectUri'             => $redirectUri,
+            'urlAuthorize'            => $tcpUrl . '/api/oidc/authorize',
+            'urlAccessToken'          => $tcpUrl . '/api/oidc/token',
+            'urlResourceOwnerDetails' => $tcpUrl . '/api/oidc/userinfo',
+            'scopes'                  => 'openid profile email',
         ]);
     }
 
@@ -66,13 +73,23 @@ class LinkedIn extends Provider
         $this->verifyEmail($email = $user->getEmail());
 
         $registration
-        ->provideTrustedEmail($email)
-        ->suggestUsername($user->getFirstName())
-        ->setPayload($user->toArray());
+            ->provideTrustedEmail($email)
+            ->suggestUsername($user->getName())
+            ->setPayload($user->toArray());
 
-        $avatar = $user->getImageUrl();
+        $avatar = $user->getAvatar();
         if ($avatar) {
             $registration->provideAvatar($avatar);
         }
+    }
+
+    protected function getSetting($key): string
+    {
+        return $this->settings->get("lstechneighbor-tcp-oidc.{$this->name()}.{$key}") ?? '';
+    }
+
+    public function enabled()
+    {
+        return $this->settings->get("lstechneighbor-tcp-oidc.{$this->name()}");
     }
 }
