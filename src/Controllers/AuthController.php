@@ -1,87 +1,112 @@
 <?php
 
 /*
- * This file is part of fof/oauth.
+ * This file is part of lstechneighbor/flarum-tcp-oidc.
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) Larry Squitieri.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace FoF\OAuth\Controllers;
+namespace LSTechNeighbor\TCPOIDC\Controllers;
 
 use Flarum\Forum\Auth\Registration;
 use Flarum\Http\Exception\RouteNotFoundException;
-use FoF\OAuth\Controller;
-use FoF\OAuth\Events\SettingSuggestions;
-use FoF\OAuth\Provider;
+use LSTechNeighbor\TCPOIDC\Controller;
+use LSTechNeighbor\TCPOIDC\Events\SettingSuggestions;
+use LSTechNeighbor\TCPOIDC\Provider;
 use Illuminate\Support\Arr;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class AuthController extends Controller
+class AuthController implements RequestHandlerInterface
 {
-    /**
-     * @var ?Provider
-     */
-    protected $provider;
-
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $name = Arr::get($request->getQueryParams(), 'provider');
-        $providers = resolve('container')->tagged('fof-oauth.providers');
+        $queryParams = $request->getQueryParams();
+        $session = $request->getAttribute('session');
 
-        foreach ($providers as $provider) {
-            if ($provider->name() === $name) {
-                if ($provider->enabled()) {
-                    $this->provider = $provider;
-                }
+        $providerName = Arr::get($queryParams, 'provider', 'tcp');
 
+        // Get the provider instance
+        $container = app();
+        $providers = $container->tagged('lstechneighbor-tcp-oidc.providers');
+        
+        $provider = null;
+        foreach ($providers as $p) {
+            if ($p->name() === $providerName) {
+                $provider = $p;
                 break;
             }
         }
 
-        if (!$this->provider) {
+        if (!$provider) {
             throw new RouteNotFoundException();
         }
 
-        return parent::handle($request);
+        // Check if this is a callback
+        if (isset($queryParams['code'])) {
+            return $this->handleCallback($request, $provider);
+        }
+
+        // Start OAuth flow
+        return $this->startAuthFlow($request, $provider);
     }
 
-    protected function getRouteName(): string
+    protected function startAuthFlow(ServerRequestInterface $request, Provider $provider): ResponseInterface
     {
-        // Errors are thrown if we return 'fof-oauth' because no options are passed.
-        return 'auth.twitter';
+        $redirectUri = $this->getRedirectUri($request, $provider->name());
+        $oauthProvider = $provider->provider($redirectUri);
+
+        $authUrl = $oauthProvider->getAuthorizationUrl([
+            'scope' => 'openid profile email'
+        ]);
+
+        return new \Zend\Diactoros\Response\RedirectResponse($authUrl);
     }
 
-    protected function getProvider(string $redirectUri): AbstractProvider
+    protected function handleCallback(ServerRequestInterface $request, Provider $provider): ResponseInterface
     {
-        return $this->provider->provider(
-            $this->url->to('forum')->route(
-                'fof-oauth',
-                ['provider' => $this->getProviderName()]
-            )
-        );
+        $queryParams = $request->getQueryParams();
+        $code = $queryParams['code'] ?? null;
+
+        if (!$code) {
+            throw new \Exception('Authorization code not received');
+        }
+
+        $redirectUri = $this->getRedirectUri($request, $provider->name());
+        $oauthProvider = $provider->provider($redirectUri);
+
+        // Exchange code for token
+        $token = $oauthProvider->getAccessToken('authorization_code', [
+            'code' => $code
+        ]);
+
+        // Get user info
+        $user = $oauthProvider->getResourceOwner($token);
+
+        // Create or update user
+        return $this->createOrUpdateUser($user, $provider, $request);
     }
 
-    protected function getProviderName(): string
+    protected function createOrUpdateUser($user, Provider $provider, ServerRequestInterface $request): ResponseInterface
     {
-        return $this->provider->name();
+        // This is a simplified version - you may need to implement user creation logic
+        // based on your specific requirements
+        
+        $registration = new Registration();
+        $provider->suggestions($registration, $user, '');
+
+        // For now, redirect to forum
+        return new \Zend\Diactoros\Response\RedirectResponse('/');
     }
 
-    protected function getAuthorizationUrlOptions(): array
+    protected function getRedirectUri(ServerRequestInterface $request, string $providerName): string
     {
-        return $this->provider->options();
+        $uri = $request->getUri();
+        return (string) $uri->withPath("/auth/{$providerName}");
     }
-
-    protected function setSuggestions(Registration $registration, $user, string $token)
-    {
-        $this->provider->suggestions($registration, $user, $token);
-
-        $this->events->dispatch(
-            new SettingSuggestions($this->getProviderName(), $registration, $user, $token)
-        );
-    }
-}
+} 

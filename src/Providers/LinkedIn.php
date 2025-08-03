@@ -31,7 +31,7 @@ class LinkedIn extends Provider
 
     public function name(): string
     {
-        return 'tcp';
+        return 'linkedin';
     }
 
     public function link(): string
@@ -92,4 +92,4 @@ class LinkedIn extends Provider
     {
         return $this->settings->get("lstechneighbor-tcp-oidc.{$this->name()}");
     }
-}
+} 
