@@ -47,7 +47,7 @@ fof-oauth:
           client_secret_label: => fof-oauth.ref.settings.client_secret
 
         gitlab:
-          description: Create an application at {link}. Give the application the <code>read_user</code> scope.
+          description: Configure TCP OIDC connection at {link}. Give the application the <code>read_user</code> scope.
 
           client_id_label: => fof-oauth.ref.settings.app_id
           client_secret_label: => fof-oauth.ref.settings.app_secret
@@ -60,14 +60,14 @@ fof-oauth:
           api_secret_label: API Secret
 
         google:
-          description: Create an application at {link}.
+          description: Configure TCP OIDC connection at {link}.
 
           client_id_label: => fof-oauth.ref.settings.client_id
           client_secret_label: => fof-oauth.ref.settings.client_secret
           hosted_domain_label: Hosted Domain (G suite/Google Apps for Business, optional)
 
         linkedin:
-          description: Create an application at {link}.
+          description: Configure TCP OIDC connection at {link}.
 
           client_id_label: => fof-oauth.ref.settings.client_id
           client_secret_label: => fof-oauth.ref.settings.client_secret
@@ -125,7 +125,7 @@ fof-oauth:
       gitlab: GitLab
       twitter: Twitter
       google: Google
-      linkedin: LinkedIn
+      linkedin: TCP
 
     gambits:
       sso:
