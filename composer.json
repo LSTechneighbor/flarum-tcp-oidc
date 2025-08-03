@@ -1,84 +1,47 @@
 {
-    "name": "fof/oauth",
-    "description": "Allow users to log in with GitHub, Twitter, Facebook, Google, and more!",
+    "name": "lstechneighbor/flarum-tcp-oidc",
+    "description": "TCP OpenID Connect provider for Flarum 2.0",
     "keywords": [
         "flarum",
-        "friendsofflarum",
-        "oauth",
-        "facebook",
-        "discord",
-        "github",
-        "gitlab",
-        "twitter",
-        "google",
-        "linkedin"
+        "tcp",
+        "oidc",
+        "openid-connect",
+        "sso"
     ],
     "type": "flarum-extension",
     "license": "MIT",
     "support": {
-        "issues": "https://github.com/FriendsOfFlarum/oauth/issues",
-        "source": "https://github.com/FriendsOfFlarum/oauth",
-        "forum": "https://discuss.flarum.org/d/25182"
+        "issues": "https://github.com/lstechneighbor/flarum-tcp-oidc/issues",
+        "source": "https://github.com/lstechneighbor/flarum-tcp-oidc"
     },
-    "homepage": "https://friendsofflarum.org",
-    "funding": [
-        {
-            "type": "website",
-            "url": "https://opencollective.com/fof/donate"
-        }
-    ],
+    "homepage": "https://github.com/lstechneighbor/flarum-tcp-oidc",
     "require": {
         "php": "^8.2",
         "flarum/core": "^2.0.0-beta",
-        "league/oauth1-client": "^1.10.1",
-        "league/oauth2-facebook": "^2.2.0",
-        "league/oauth2-github": "^3.1.0",
-        "league/oauth2-google": "^4.0.1",
-        "omines/oauth2-gitlab": "^3.3.0",
-        "wohali/oauth2-discord-new": "^1.2.1",
+        "league/oauth2-client": "^2.7",
         "fof/extend": "dev-ds/2.0"
-    },
-    "replace": {
-        "flarum/auth-facebook": "*",
-        "flarum/auth-github": "*",
-        "flarum/auth-twitter": "*",
-        "fof/auth-discord": "*",
-        "fof/auth-gitlab": "*",
-        "luuhai48/oauth-google": "*",
-        "luuhai48/oauth-linkedin": "*"
     },
     "authors": [
         {
-            "name": "David Sevilla Martin",
-            "email": "me+fof@datitisev.me",
-            "role": "Developer"
-        },
-        {
-            "name": "IanM",
-            "email": "ian@flarum.org",
+            "name": "Larry Squitieri",
+            "email": "larry@tcp.com",
             "role": "Developer"
         }
     ],
     "autoload": {
         "psr-4": {
-            "FoF\\OAuth\\": "src/"
+            "LSTechNeighbor\TCPOIDC\": "src/"
         }
     },
     "extra": {
         "flarum-extension": {
-            "title": "FoF OAuth",
+            "title": "TCP OIDC Provider",
             "category": "feature",
             "icon": {
-                "name": "fas fa-sign-in-alt",
-                "backgroundColor": "#e74c3c",
+                "name": "fas fa-key",
+                "backgroundColor": "#4a90e2",
                 "color": "#fff"
-            },
-            "optional-dependencies": [
-                "flarum/gdpr"
-            ]
-        },
-        "flagrow": {
-            "discuss": "https://discuss.flarum.org/d/25182"
+            }
         },
         "flarum-cli": {
             "modules": {
@@ -111,7 +74,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "FoF\\OAuth\\Tests\\": "tests/"
+            "LSTechNeighbor\TCPOIDC\Tests\": "tests/"
         }
     }
 }
