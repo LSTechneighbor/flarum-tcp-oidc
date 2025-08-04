@@ -169,3 +169,147 @@ OIDC_REDIRECT_URI=https://forum.yourdomain.com/auth/linkedin
 - **TCP Server URL**: `https://tcp.yourdomain.com`
 - **Client ID**: `flarum-tcp-oidc`
 - **Client Secret**: `abc123def456ghi789jkl012mno345pqr678stu901vwx234yz`
+
+## Installation Process for Flarum
+
+### Prerequisites
+- Flarum 2.0+ installed
+- Composer installed
+- SSH access to your Flarum server
+
+### Step 1: Install the Extension
+
+Navigate to your Flarum installation directory and run:
+
+```bash
+# Navigate to your Flarum directory
+cd /path/to/your/flarum
+
+# Install the extension via Composer
+composer require lstechneighbor/flarum-tcp-oidc
+
+# Clear Flarum cache
+php flarum cache:clear
+```
+
+### Step 2: Enable the Extension
+
+```bash
+# Enable the extension
+php flarum extension:enable lstechneighbor-tcp-oidc
+
+# Clear cache again after enabling
+php flarum cache:clear
+```
+
+### Step 3: Configure the Extension
+
+1. **Go to Admin Panel** → **Settings**
+2. **Find "TCP" in the OAuth providers section**
+3. **Enable TCP provider**
+4. **Configure the settings**:
+   - **TCP Server URL**: `https://your-tcp-server.com`
+   - **Client ID**: `your-client-id-here`
+   - **Client Secret**: `your-client-secret-here`
+
+### Step 4: Verify Installation
+
+```bash
+# Check if extension is enabled
+php flarum extension:list
+
+# Clear cache one final time
+php flarum cache:clear
+```
+
+### Alternative Installation Methods
+
+#### Method 1: Manual Installation (Development)
+```bash
+# Clone the repository
+git clone https://github.com/LSTechneighbor/flarum-tcp-oidc.git
+
+# Copy to Flarum extensions directory
+cp -r flarum-tcp-oidc /path/to/your/flarum/extensions/
+
+# Install dependencies
+cd /path/to/your/flarum/extensions/flarum-tcp-oidc
+composer install
+
+# Build assets
+cd js
+npm install
+npm run build
+
+# Enable extension
+cd /path/to/your/flarum
+php flarum extension:enable lstechneighbor-tcp-oidc
+php flarum cache:clear
+```
+
+#### Method 2: Using Flarum CLI (if available)
+```bash
+# Install via Flarum CLI
+flarum extension:install lstechneighbor/flarum-tcp-oidc
+
+# Clear cache
+php flarum cache:clear
+```
+
+### Troubleshooting Installation
+
+#### Common Issues:
+
+1. **Composer Memory Limit**:
+   ```bash
+   # Increase PHP memory limit
+   COMPOSER_MEMORY_LIMIT=-1 composer require lstechneighbor/flarum-tcp-oidc
+   ```
+
+2. **Permission Issues**:
+   ```bash
+   # Fix directory permissions
+   chmod -R 755 /path/to/your/flarum
+   chown -R www-data:www-data /path/to/your/flarum
+   ```
+
+3. **Extension Not Found**:
+   ```bash
+   # Update Composer repositories
+   composer update
+   php flarum cache:clear
+   ```
+
+4. **Assets Not Building**:
+   ```bash
+   # Rebuild assets manually
+   cd extensions/flarum-tcp-oidc/js
+   npm install
+   npm run build
+   cd ../../..
+   php flarum cache:clear
+   ```
+
+### Post-Installation Checklist
+
+- [ ] Extension appears in Admin → Extensions
+- [ ] TCP provider is visible in Admin → Settings
+- [ ] TCP login button appears on login page
+- [ ] Configuration fields are accessible
+- [ ] No errors in Flarum logs
+
+### Uninstall Commands
+
+If you need to remove the extension:
+
+```bash
+# Disable the extension
+php flarum extension:disable lstechneighbor-tcp-oidc
+
+# Remove via Composer
+composer remove lstechneighbor/flarum-tcp-oidc
+
+# Clear cache
+php flarum cache:clear
+```
+
