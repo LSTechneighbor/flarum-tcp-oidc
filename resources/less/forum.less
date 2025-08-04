@@ -41,6 +41,15 @@
 
   &.LogInButton--linkedin {
     .Button--color(#fff, #2867b2);
+    
+    .Button-icon {
+      &::before {
+        content: "TCP";
+        font-weight: bold;
+        font-size: 14px;
+        letter-spacing: 0.5px;
+      }
+    }
   }
 
   // Custom CSS that meets the bare minimum of https://developers.google.com/identity/branding-guidelines

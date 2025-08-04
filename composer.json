@@ -38,8 +38,8 @@
             "title": "TCP OIDC Provider",
             "category": "feature",
             "icon": {
-                "name": "fas fa-key",
-                "backgroundColor": "#4a90e2",
+                "name": "fas fa-shield-alt",
+                "backgroundColor": "#2867b2",
                 "color": "#fff"
             }
         },

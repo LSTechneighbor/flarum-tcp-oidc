@@ -50,7 +50,7 @@ class LinkedIn extends Provider
 
     public function icon(): string
     {
-        return 'fas fa-key';
+        return 'tcp-text';
     }
 
     public function provider(string $redirectUri): AbstractProvider

@@ -96,7 +96,11 @@ export default class AuthSettingsPage extends ExtensionPage {
               setting: `fof-oauth.${name}`,
               label: (
                 <div>
-                  <Icon name={provider.icon} />
+                  {provider.icon === 'tcp-text' ? (
+                    <span style={{ fontWeight: 'bold', fontSize: '14px', letterSpacing: '0.5px' }}>TCP</span>
+                  ) : (
+                    <Icon name={provider.icon} />
+                  )}
                   <span>{app.translator.trans(`fof-oauth.lib.providers.${name}`)}</span>
                 </div>
               ),
