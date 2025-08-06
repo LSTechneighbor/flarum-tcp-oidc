@@ -10,7 +10,9 @@ import { openOAuthPopup } from '../utils/popupUtils';
 
 export default function () {
   extend(LogInButton, 'initAttrs', function (returnedValue, attrs) {
+    console.log('TCP OIDC: LogInButton initAttrs called with path:', attrs.path);
     attrs.onclick = function () {
+      console.log('TCP OIDC: Button clicked, path:', attrs.path);
       openOAuthPopup(app, attrs);
     };
   });
@@ -51,6 +53,7 @@ export default function () {
         className += ' Button--icon';
       }
 
+      console.log(`Adding TCP OIDC button for provider: ${name}`);
       items.add(
         name,
         <div className={`LogInButtonContainer LogInButtonContainer--${name}`}>
