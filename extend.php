@@ -20,7 +20,17 @@ use LSTechNeighbor\TCPOIDC\Events\OAuthLoginSuccessful;
 return [
     (new Extend\Frontend('forum'))
         ->js(__DIR__.'/js/dist/forum.js')
-        ->css(__DIR__.'/resources/less/forum.less'),
+        ->css(__DIR__.'/resources/less/forum.less')
+        ->content(function (Document $document) {
+            try {
+                $providers = resolve('lstechneighbor-tcp-oidc.providers.forum');
+                error_log('TCP OIDC Debug: Forum payload providers: ' . json_encode($providers));
+                $document->payload['forum']['lstechneighbor-tcp-oidc'] = $providers;
+            } catch (\Exception $e) {
+                error_log('TCP OIDC Debug: Error resolving forum providers: ' . $e->getMessage());
+                $document->payload['forum']['lstechneighbor-tcp-oidc'] = [];
+            }
+        }),
 
     (new Extend\Frontend('admin'))
         ->js(__DIR__.'/js/dist/admin.js')
@@ -40,9 +50,6 @@ return [
 
     (new Extend\Routes('forum'))
         ->get('/auth/linkedin', 'auth.linkedin', Controllers\AuthController::class),
-
-    (new Extend\Api())
-        ->serializer('forum', Api\AddForumAttributes::class),
 
     (new Extend\ServiceProvider())
         ->register(OAuthServiceProvider::class),
