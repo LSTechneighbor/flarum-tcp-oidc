@@ -18,6 +18,15 @@ export default function () {
   extend(LogInButtons.prototype, 'items', function (items) {
     const onlyIcons = !!app.forum.attribute('lstechneighbor-tcp-oidc.only_icons');
     const buttons = app.forum.attribute('lstechneighbor-tcp-oidc').filter(Boolean);
+    
+    // Debug logging
+    console.log('TCP OIDC Debug:', {
+      onlyIcons,
+      buttons,
+      forumAttributes: app.forum.attribute('lstechneighbor-tcp-oidc'),
+      allAttributes: Object.keys(app.forum.attributes())
+    });
+    
     const googleButton = buttons.splice(buttons.indexOf(buttons.find((b) => b.name === 'google')), 1);
 
     buttons.concat(googleButton).forEach(({ name, icon, priority }) => {

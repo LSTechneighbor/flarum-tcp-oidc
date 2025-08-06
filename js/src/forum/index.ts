@@ -7,7 +7,7 @@ export { default as extend } from './extend';
 export * from './components';
 export * from './utils';
 
-app.initializers.add('fof/oauth', () => {
+app.initializers.add('lstechneighbor-tcp-oidc', () => {
   extendLoginSignup();
   addLinkedAccountsToUserSecurityPage();
 });
