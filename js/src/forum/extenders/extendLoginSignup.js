@@ -19,7 +19,17 @@ export default function () {
     const onlyIcons = !!app.forum.attribute('lstechneighbor-tcp-oidc.only_icons');
     
     // Get the buttons data from forum attributes
-    const buttons = app.forum.attribute('lstechneighbor-tcp-oidc') || [];
+    let buttons = app.forum.attribute('lstechneighbor-tcp-oidc') || [];
+    
+    // If not found via attribute, try direct access
+    if (!buttons || buttons.length === 0) {
+      buttons = app.forum.data?.attributes?.['lstechneighbor-tcp-oidc'] || [];
+    }
+    
+    // If still not found, try payload
+    if (!buttons || buttons.length === 0) {
+      buttons = app.forum.payload?.['lstechneighbor-tcp-oidc'] || [];
+    }
     
     // Debug logging
     console.log('TCP OIDC Debug:', {
@@ -28,7 +38,9 @@ export default function () {
       forumAttributes: app.forum.attribute('lstechneighbor-tcp-oidc'),
       forumData: app.forum.data.attributes,
       allForumData: app.forum.data,
-      forumPayload: app.forum.payload
+      forumPayload: app.forum.payload,
+      forumPayloadKeys: Object.keys(app.forum.payload || {}),
+      forumDataKeys: Object.keys(app.forum.data.attributes || {})
     });
     
     // Safety check - if no buttons, don't proceed
