@@ -39,6 +39,9 @@ return [
         ->add(Middleware\BindRequest::class),
 
     (new Extend\Routes('forum'))
+        ->get('/auth/tcp-debug', 'auth.tcp.debug', function() {
+            return new \Zend\Diactoros\Response\JsonResponse(['status' => 'TCP route working']);
+        })
         ->get('/auth/tcp', 'auth.tcp', Controllers\AuthController::class),
 
     (new Extend\ServiceProvider())

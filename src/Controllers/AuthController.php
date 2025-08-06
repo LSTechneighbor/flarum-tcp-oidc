@@ -26,6 +26,8 @@ class AuthController implements RequestHandlerInterface
 {
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
+        error_log("TCP OIDC: AuthController handle method called!");
+        
         $queryParams = $request->getQueryParams();
         $session = $request->getAttribute('session');
         $routeParams = $request->getAttribute('routeParameters', []);
