@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace FoF\OAuth;
+namespace LSTechNeighbor\TCPOIDC;
 
 /**
  * We use an object that can be cast to string, because it allows us to use the Flarum Route extender
@@ -23,7 +23,7 @@ class OAuth2RoutePattern
         /**
          * @var Provider[] $providers
          */
-        $providers = resolve('container')->tagged('fof-oauth.providers');
+        $providers = resolve('container')->tagged('lstechneighbor-tcp-oidc.providers');
 
         $providerNames = [];
 
