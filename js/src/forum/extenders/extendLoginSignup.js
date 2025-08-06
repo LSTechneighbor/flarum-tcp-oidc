@@ -35,12 +35,14 @@ export default function () {
     
     // Safety check - if no buttons, don't proceed
     if (!buttons || buttons.length === 0) {
+      console.log('No TCP OIDC buttons found in forum attributes');
       return;
     }
     
     const filteredButtons = buttons.filter(Boolean);
     
     // Process all buttons normally
+    console.log('Processing TCP OIDC buttons:', filteredButtons);
     filteredButtons.forEach(({ name, icon, priority }) => {
       let className = `Button FoFLogInButton LogInButton--${name}`;
 

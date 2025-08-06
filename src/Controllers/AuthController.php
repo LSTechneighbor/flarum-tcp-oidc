@@ -31,6 +31,9 @@ class AuthController implements RequestHandlerInterface
         $routeParams = $request->getAttribute('routeParameters', []);
 
         $providerName = $routeParams['provider'] ?? 'tcp';
+        
+        // Debug logging
+        error_log("TCP OIDC: AuthController called with provider: " . $providerName);
 
         // Get the provider instance
         $container = app();
@@ -45,8 +48,11 @@ class AuthController implements RequestHandlerInterface
         }
 
         if (!$provider) {
+            error_log("TCP OIDC: Provider not found for: " . $providerName);
             throw new RouteNotFoundException();
         }
+        
+        error_log("TCP OIDC: Provider found: " . $provider->name());
 
         // Check if this is a callback
         if (isset($queryParams['code'])) {
