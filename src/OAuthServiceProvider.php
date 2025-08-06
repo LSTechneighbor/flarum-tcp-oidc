@@ -43,9 +43,14 @@ class OAuthServiceProvider extends AbstractServiceProvider
         $config = $this->container->make(Config::class);
 
         $this->container->singleton('lstechneighbor-tcp-oidc.providers.forum', function () use ($cache, $config) {
+            // Debug logging
+            error_log('TCP OIDC Debug: Resolving forum providers');
+            
             // If we're in debug mode, don't cache the providers, but directly return them.
             if ($config->inDebugMode()) {
-                return $this->mapProviders();
+                $data = $this->mapProviders();
+                error_log('TCP OIDC Debug: Forum providers (debug mode): ' . json_encode($data));
+                return $data;
             }
 
             $cacheKey = 'lstechneighbor-tcp-oidc.providers.forum';
@@ -55,7 +60,8 @@ class OAuthServiceProvider extends AbstractServiceProvider
                 $data = $this->mapProviders();
                 $cache->forever($cacheKey, $data);
             }
-
+            
+            error_log('TCP OIDC Debug: Forum providers (cached): ' . json_encode($data));
             return $data;
         });
 
