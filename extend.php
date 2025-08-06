@@ -60,6 +60,11 @@ return [
         ->serializeToForum('lstechneighbor-tcp-oidc.fullscreenPopup', 'lstechneighbor-tcp-oidc.fullscreenPopup', 'boolVal')
         ->default('lstechneighbor-tcp-oidc.log-oauth-errors', false),
 
+    (new Extend\Frontend('forum'))
+        ->content(function (Document $document) {
+            $document->payload['lstechneighbor-tcp-oidc'] = resolve('lstechneighbor-tcp-oidc.providers.forum');
+        }),
+
     (new Extend\Event())
         ->listen(RegisteringFromProvider::class, Listeners\AssignGroupToUser::class)
         ->listen(OAuthLoginSuccessful::class, Listeners\UpdateEmailFromProvider::class)

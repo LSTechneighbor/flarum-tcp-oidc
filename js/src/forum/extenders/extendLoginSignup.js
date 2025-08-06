@@ -16,8 +16,8 @@ export default function () {
   });
 
   extend(LogInButtons.prototype, 'items', function (items) {
-    const onlyIcons = !!app.forum.attribute('fof-oauth.only_icons');
-    const buttons = app.forum.attribute('fof-oauth').filter(Boolean);
+    const onlyIcons = !!app.forum.attribute('lstechneighbor-tcp-oidc.only_icons');
+    const buttons = app.forum.attribute('lstechneighbor-tcp-oidc').filter(Boolean);
     const googleButton = buttons.splice(buttons.indexOf(buttons.find((b) => b.name === 'google')), 1);
 
     buttons.concat(googleButton).forEach(({ name, icon, priority }) => {
@@ -43,7 +43,7 @@ export default function () {
   });
 
   override(LogInButton.prototype, 'view', function (orig, vnode) {
-    const onlyIcons = !!app.forum.attribute('fof-oauth.only_icons');
+    const onlyIcons = !!app.forum.attribute('lstechneighbor-tcp-oidc.only_icons');
     if (!onlyIcons) return orig(vnode);
 
     const child = orig(vnode);
@@ -52,7 +52,7 @@ export default function () {
   });
 
   extend(LogInButtons.prototype, 'view', function (vdom) {
-    const onlyIcons = !!app.forum.attribute('fof-oauth.only_icons');
+    const onlyIcons = !!app.forum.attribute('lstechneighbor-tcp-oidc.only_icons');
     if (!onlyIcons) return;
 
     vdom.attrs.className += ' FoFLogInButtons--icons';
