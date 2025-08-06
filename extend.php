@@ -20,7 +20,10 @@ use LSTechNeighbor\TCPOIDC\Events\OAuthLoginSuccessful;
 return [
     (new Extend\Frontend('forum'))
         ->js(__DIR__.'/js/dist/forum.js')
-        ->css(__DIR__.'/resources/less/forum.less'),
+        ->css(__DIR__.'/resources/less/forum.less')
+        ->content(function (Document $document) {
+            $document->payload['lstechneighbor-tcp-oidc'] = resolve('lstechneighbor-tcp-oidc.providers.forum');
+        }),
 
     (new Extend\Frontend('admin'))
         ->js(__DIR__.'/js/dist/admin.js')
@@ -59,11 +62,6 @@ return [
         ->serializeToForum('lstechneighbor-tcp-oidc.popupHeight', 'lstechneighbor-tcp-oidc.popupHeight', 'intval')
         ->serializeToForum('lstechneighbor-tcp-oidc.fullscreenPopup', 'lstechneighbor-tcp-oidc.fullscreenPopup', 'boolVal')
         ->default('lstechneighbor-tcp-oidc.log-oauth-errors', false),
-
-    (new Extend\Frontend('forum'))
-        ->content(function (Document $document) {
-            $document->payload['lstechneighbor-tcp-oidc'] = resolve('lstechneighbor-tcp-oidc.providers.forum');
-        }),
 
     (new Extend\Event())
         ->listen(RegisteringFromProvider::class, Listeners\AssignGroupToUser::class)

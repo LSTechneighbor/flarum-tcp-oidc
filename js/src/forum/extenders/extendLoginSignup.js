@@ -17,7 +17,7 @@ export default function () {
 
   extend(LogInButtons.prototype, 'items', function (items) {
     const onlyIcons = !!app.forum.attribute('lstechneighbor-tcp-oidc.only_icons');
-    const buttons = app.forum.attribute('lstechneighbor-tcp-oidc').filter(Boolean);
+    const buttons = app.forum.attribute('lstechneighbor-tcp-oidc') || [];
     
     // Debug logging
     console.log('TCP OIDC Debug:', {
@@ -27,9 +27,16 @@ export default function () {
       allAttributes: Object.keys(app.forum.attributes())
     });
     
-    const googleButton = buttons.splice(buttons.indexOf(buttons.find((b) => b.name === 'google')), 1);
+    // Safety check - if no buttons, don't proceed
+    if (!buttons || buttons.length === 0) {
+      console.log('TCP OIDC: No buttons found, skipping');
+      return;
+    }
+    
+    const filteredButtons = buttons.filter(Boolean);
+    const googleButton = filteredButtons.splice(filteredButtons.indexOf(filteredButtons.find((b) => b.name === 'google')), 1);
 
-    buttons.concat(googleButton).forEach(({ name, icon, priority }) => {
+    filteredButtons.concat(googleButton).forEach(({ name, icon, priority }) => {
       let className = `Button FoFLogInButton LogInButton--${name}`;
 
       // Google branding does not allow inline icon, so we'll keep the full button
