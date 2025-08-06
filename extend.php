@@ -40,7 +40,9 @@ return [
 
     (new Extend\Routes('forum'))
         ->get('/auth/tcp-debug', 'auth.tcp.debug', function() {
-            return new \Zend\Diactoros\Response\JsonResponse(['status' => 'TCP route working']);
+            header('Content-Type: application/json');
+            echo json_encode(['status' => 'TCP route working']);
+            exit;
         })
         ->get('/auth/tcp', 'auth.tcp', Controllers\AuthController::class),
 
