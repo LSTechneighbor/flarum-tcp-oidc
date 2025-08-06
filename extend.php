@@ -26,9 +26,12 @@ return [
                 $providers = resolve('lstechneighbor-tcp-oidc.providers.forum');
                 error_log('TCP OIDC Debug: Forum payload providers: ' . json_encode($providers));
                 $document->payload['lstechneighbor-tcp-oidc'] = $providers;
+                // Also set it as a forum attribute
+                $document->payload['forum']['lstechneighbor-tcp-oidc'] = $providers;
             } catch (\Exception $e) {
                 error_log('TCP OIDC Debug: Error resolving forum providers: ' . $e->getMessage());
                 $document->payload['lstechneighbor-tcp-oidc'] = [];
+                $document->payload['forum']['lstechneighbor-tcp-oidc'] = [];
             }
         }),
 

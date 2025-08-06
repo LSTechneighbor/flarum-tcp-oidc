@@ -17,14 +17,22 @@ export default function () {
 
   extend(LogInButtons.prototype, 'items', function (items) {
     const onlyIcons = !!app.forum.attribute('lstechneighbor-tcp-oidc.only_icons');
-    const buttons = app.forum.attribute('lstechneighbor-tcp-oidc') || [];
+    
+    // Try multiple ways to get the buttons data
+    let buttons = app.forum.attribute('lstechneighbor-tcp-oidc') || [];
+    if (!buttons || buttons.length === 0) {
+      // Try alternative access methods
+      buttons = app.forum.data?.attributes?.['lstechneighbor-tcp-oidc'] || [];
+    }
     
     // Debug logging
     console.log('TCP OIDC Debug:', {
       onlyIcons,
       buttons,
       forumAttributes: app.forum.attribute('lstechneighbor-tcp-oidc'),
-      forumData: app.forum.data.attributes
+      forumData: app.forum.data.attributes,
+      allForumData: app.forum.data,
+      forumPayload: app.forum.payload
     });
     
     // Safety check - if no buttons, don't proceed
