@@ -24,7 +24,7 @@ export default function () {
       onlyIcons,
       buttons,
       forumAttributes: app.forum.attribute('lstechneighbor-tcp-oidc'),
-      allForumAttributes: Object.keys(app.forum.attributes())
+      forumData: app.forum.data.attributes
     });
     
     // Safety check - if no buttons, don't proceed
