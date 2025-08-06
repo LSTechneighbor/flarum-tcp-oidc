@@ -30,7 +30,7 @@ class AuthController implements RequestHandlerInterface
         $session = $request->getAttribute('session');
         $routeParams = $request->getAttribute('routeParameters', []);
 
-        $providerName = $routeParams['provider'] ?? 'tcp';
+        $providerName = 'tcp'; // Hardcoded for TCP route
         
         // Debug logging
         error_log("TCP OIDC: AuthController called with provider: " . $providerName);

@@ -39,7 +39,7 @@ return [
         ->add(Middleware\BindRequest::class),
 
     (new Extend\Routes('forum'))
-        ->get('/auth/{provider}', 'auth.provider', Controllers\AuthController::class),
+        ->get('/auth/tcp', 'auth.tcp', Controllers\AuthController::class),
 
     (new Extend\ServiceProvider())
         ->register(OAuthServiceProvider::class),
