@@ -43,13 +43,9 @@ class OAuthServiceProvider extends AbstractServiceProvider
         $config = $this->container->make(Config::class);
 
         $this->container->singleton('lstechneighbor-tcp-oidc.providers.forum', function () use ($cache, $config) {
-            // Debug logging
-            error_log('TCP OIDC Debug: Resolving forum providers');
-            
             // If we're in debug mode, don't cache the providers, but directly return them.
             if ($config->inDebugMode()) {
                 $data = $this->mapProviders();
-                error_log('TCP OIDC Debug: Forum providers (debug mode): ' . json_encode($data));
                 return $data;
             }
 
@@ -61,7 +57,6 @@ class OAuthServiceProvider extends AbstractServiceProvider
                 $cache->forever($cacheKey, $data);
             }
             
-            error_log('TCP OIDC Debug: Forum providers (cached): ' . json_encode($data));
             return $data;
         });
 
@@ -86,7 +81,6 @@ class OAuthServiceProvider extends AbstractServiceProvider
     protected function mapProviders(bool $admin = false): array
     {
         $providers = $this->container->tagged('lstechneighbor-tcp-oidc.providers');
-        error_log('TCP OIDC Debug: Found ' . count(iterator_to_array($providers)) . ' tagged providers');
 
         if ($admin) {
             return array_map(function (Provider $provider) {
@@ -115,10 +109,6 @@ class OAuthServiceProvider extends AbstractServiceProvider
         $result = array_filter($result, function ($provider) {
             return $provider !== null;
         });
-
-        // Debug logging
-        error_log('TCP OIDC Debug - Providers: ' . json_encode($result));
-        error_log('TCP OIDC Debug - Admin mode: ' . ($admin ? 'true' : 'false'));
 
         return $result;
     }

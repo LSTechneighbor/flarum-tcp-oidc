@@ -91,7 +91,6 @@ class LinkedIn extends Provider
     public function enabled()
     {
         $enabled = $this->settings->get("lstechneighbor-tcp-oidc.{$this->name()}");
-        error_log("TCP OIDC Debug: LinkedIn provider enabled: " . ($enabled ? 'true' : 'false'));
         return $enabled;
     }
 } 

@@ -31,21 +31,10 @@ export default function () {
       buttons = app.forum.payload?.['lstechneighbor-tcp-oidc'] || [];
     }
     
-    // Debug logging
-    console.log('TCP OIDC Debug - Basic Info:', {
-      onlyIcons,
-      buttons,
-      forumAttributes: app.forum.attribute('lstechneighbor-tcp-oidc')
-    });
-    
-    console.log('TCP OIDC Debug - Forum Data Keys:', Object.keys(app.forum.data.attributes || {}));
-    console.log('TCP OIDC Debug - Forum Payload Keys:', Object.keys(app.forum.payload || {}));
-    console.log('TCP OIDC Debug - Forum Data:', JSON.stringify(app.forum.data.attributes, null, 2));
-    console.log('TCP OIDC Debug - Forum Payload:', JSON.stringify(app.forum.payload, null, 2));
+    // Debug logging removed for production
     
     // Safety check - if no buttons, don't proceed
     if (!buttons || buttons.length === 0) {
-      console.log('TCP OIDC: No buttons found, skipping');
       return;
     }
     
