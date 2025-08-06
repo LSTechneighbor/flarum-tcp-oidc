@@ -1,6 +1,6 @@
 {
     "name": "lstechneighbor/flarum-tcp-oidc",
-    "version": "1.0.39",
+    "version": "1.0.40",
     "description": "TCP OpenID Connect provider for Flarum 2.0",
     "keywords": [
         "flarum",

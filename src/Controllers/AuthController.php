@@ -77,12 +77,14 @@ class AuthController implements RequestHandlerInterface
                 'scope' => 'openid profile email'
             ]);
 
-            return new \Zend\Diactoros\Response\RedirectResponse($authUrl);
+            header('Location: ' . $authUrl);
+            exit;
         } catch (\Exception $e) {
             // If there's an error (like missing configuration), redirect to forum with error
             $forumUrl = (string) $request->getUri()->withPath('/');
             $errorUrl = $forumUrl . '?oauth_error=configuration';
-            return new \Zend\Diactoros\Response\RedirectResponse($errorUrl);
+            header('Location: ' . $errorUrl);
+            exit;
         }
     }
 
@@ -119,7 +121,8 @@ class AuthController implements RequestHandlerInterface
         $provider->suggestions($registration, $user, '');
 
         // For now, redirect to forum
-        return new \Zend\Diactoros\Response\RedirectResponse('/');
+        header('Location: /');
+        exit;
     }
 
     protected function getRedirectUri(ServerRequestInterface $request, string $providerName): string
