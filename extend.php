@@ -20,19 +20,7 @@ use LSTechNeighbor\TCPOIDC\Events\OAuthLoginSuccessful;
 return [
     (new Extend\Frontend('forum'))
         ->js(__DIR__.'/js/dist/forum.js')
-        ->css(__DIR__.'/resources/less/forum.less')
-        ->content(function (Document $document) {
-            try {
-                $providers = resolve('lstechneighbor-tcp-oidc.providers.forum');
-                error_log('TCP OIDC Debug: Forum payload providers: ' . json_encode($providers));
-                $document->payload['forum']['lstechneighbor-tcp-oidc'] = $providers;
-                $document->payload['lstechneighbor-tcp-oidc'] = $providers;
-            } catch (\Exception $e) {
-                error_log('TCP OIDC Debug: Error resolving forum providers: ' . $e->getMessage());
-                $document->payload['forum']['lstechneighbor-tcp-oidc'] = [];
-                $document->payload['lstechneighbor-tcp-oidc'] = [];
-            }
-        }),
+        ->css(__DIR__.'/resources/less/forum.less'),
 
     (new Extend\Frontend('admin'))
         ->js(__DIR__.'/js/dist/admin.js')
@@ -69,7 +57,10 @@ return [
         ->serializeToForum('lstechneighbor-tcp-oidc.popupHeight', 'lstechneighbor-tcp-oidc.popupHeight', 'intval')
         ->serializeToForum('lstechneighbor-tcp-oidc.fullscreenPopup', 'lstechneighbor-tcp-oidc.fullscreenPopup', 'boolVal')
         ->default('lstechneighbor-tcp-oidc.log-oauth-errors', false)
-        ->default('lstechneighbor-tcp-oidc.linkedin', true),
+        ->default('lstechneighbor-tcp-oidc.linkedin', true)
+        ->serializeToForum('lstechneighbor-tcp-oidc', 'lstechneighbor-tcp-oidc', function ($value) {
+            return resolve('lstechneighbor-tcp-oidc.providers.forum');
+        }),
 
     (new Extend\Event())
         ->listen(RegisteringFromProvider::class, Listeners\AssignGroupToUser::class)
