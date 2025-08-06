@@ -39,9 +39,9 @@ export default function () {
     }
     
     const filteredButtons = buttons.filter(Boolean);
-    const tcpButton = filteredButtons.splice(filteredButtons.indexOf(filteredButtons.find((b) => b.name === 'tcp')), 1);
-
-    filteredButtons.concat(tcpButton).forEach(({ name, icon, priority }) => {
+    
+    // Process all buttons normally
+    filteredButtons.forEach(({ name, icon, priority }) => {
       let className = `Button FoFLogInButton LogInButton--${name}`;
 
       // TCP branding does not allow inline icon, so we'll keep the full button

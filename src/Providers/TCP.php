@@ -91,6 +91,7 @@ class TCP extends Provider
     public function enabled()
     {
         $enabled = $this->settings->get("lstechneighbor-tcp-oidc.{$this->name()}");
-        return $enabled;
+        // Default to enabled if not set
+        return $enabled !== null ? $enabled : true;
     }
 } 
