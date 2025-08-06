@@ -34,6 +34,8 @@ class AuthController implements RequestHandlerInterface
         
         // Debug logging
         error_log("TCP OIDC: AuthController called with provider: " . $providerName);
+        error_log("TCP OIDC: Request URI: " . $request->getUri());
+        error_log("TCP OIDC: Route params: " . print_r($routeParams, true));
 
         // Get the provider instance
         $container = app();

@@ -101,4 +101,9 @@ class TCP extends Provider
         // Default to enabled if not set
         return $enabled !== null ? $enabled : true;
     }
+
+    public function excludeFromRoutePattern(): bool
+    {
+        return false;
+    }
 } 
