@@ -185,12 +185,53 @@ Navigate to your Flarum installation directory and run:
 # Navigate to your Flarum directory
 cd /path/to/your/flarum
 
+# Set Permissions to install
+sudo php flarum cache:clear
+
+sudo chown -R $USER:www-data /var/www/flarum
+sudo chmod -R u+rw /var/www/flarum
+
+
 # Install the extension via Composer
 composer require lstechneighbor/flarum-tcp-oidc
+#Updating 
+composer update lstechneighbor/flarum-tcp-oidc
+
+ # Clear Cache Again
+sudo php flarum cache:clear
+
+# run Migrate
+sudo php flarum migrate
+
+#Set Permissions back to www-data
+sudo chown -R www-data:www-data /var/www/flarum
+sudo chmod -R 775 /var/www/flarum/storage
+sudo chmod -R 775 /var/www/flarum/assets
+sudo chown -R www-data:www-data /var/www/flarum
+sudo find /var/www/flarum -type d -exec chmod 755 {} \;
+sudo find /var/www/flarum -type f -exec chmod 644 {} \;
+
+
+#Restart PHP and Nginx
+sudo systemctl reload php8.4-fpm
+sudo systemctl restart nginx
+
+
+
 
 # Clear Flarum cache
-php flarum cache:clear
+
+
 ```
+
+
+
+
+
+
+
+
+
 
 ### Step 2: Enable the Extension
 

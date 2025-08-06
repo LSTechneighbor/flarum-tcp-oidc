@@ -42,7 +42,7 @@ class LinkedIn extends Provider
     public function fields(): array
     {
         return [
-            'tcp_url'       => 'required',
+            'server_url'    => 'required',
             'client_id'     => 'required',
             'client_secret' => 'required',
         ];
@@ -55,7 +55,7 @@ class LinkedIn extends Provider
 
     public function provider(string $redirectUri): AbstractProvider
     {
-        $tcpUrl = $this->getSetting('tcp_url');
+        $tcpUrl = $this->getSetting('server_url');
         
         return new GenericProvider([
             'clientId'                => $this->getSetting('client_id'),
