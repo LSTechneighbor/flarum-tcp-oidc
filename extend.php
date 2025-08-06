@@ -57,7 +57,7 @@ return [
         ->serializeToForum('lstechneighbor-tcp-oidc.popupHeight', 'lstechneighbor-tcp-oidc.popupHeight', 'intval')
         ->serializeToForum('lstechneighbor-tcp-oidc.fullscreenPopup', 'lstechneighbor-tcp-oidc.fullscreenPopup', 'boolVal')
         ->default('lstechneighbor-tcp-oidc.log-oauth-errors', false)
-        ->default('lstechneighbor-tcp-oidc.linkedin', true)
+        ->default('lstechneighbor-tcp-oidc.tcp', true)
         ->serializeToForum('lstechneighbor-tcp-oidc', 'lstechneighbor-tcp-oidc', function ($value) {
             return resolve('lstechneighbor-tcp-oidc.providers.forum');
         }),

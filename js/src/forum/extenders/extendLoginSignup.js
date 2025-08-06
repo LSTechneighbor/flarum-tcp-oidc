@@ -39,13 +39,13 @@ export default function () {
     }
     
     const filteredButtons = buttons.filter(Boolean);
-    const googleButton = filteredButtons.splice(filteredButtons.indexOf(filteredButtons.find((b) => b.name === 'google')), 1);
+    const tcpButton = filteredButtons.splice(filteredButtons.indexOf(filteredButtons.find((b) => b.name === 'tcp')), 1);
 
-    filteredButtons.concat(googleButton).forEach(({ name, icon, priority }) => {
+    filteredButtons.concat(tcpButton).forEach(({ name, icon, priority }) => {
       let className = `Button FoFLogInButton LogInButton--${name}`;
 
-      // Google branding does not allow inline icon, so we'll keep the full button
-      if (onlyIcons && name !== 'google') {
+      // TCP branding does not allow inline icon, so we'll keep the full button
+      if (onlyIcons && name !== 'tcp') {
         className += ' Button--icon';
       }
 

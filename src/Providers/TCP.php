@@ -17,7 +17,7 @@ use LSTechNeighbor\TCPOIDC\Provider;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\GenericProvider;
 
-class LinkedIn extends Provider
+class TCP extends Provider
 {
     /**
      * @var SettingsRepositoryInterface
@@ -31,7 +31,7 @@ class LinkedIn extends Provider
 
     public function name(): string
     {
-        return 'linkedin';
+        return 'tcp';
     }
 
     public function link(): string

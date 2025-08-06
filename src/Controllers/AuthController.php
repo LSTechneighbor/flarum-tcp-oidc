@@ -30,7 +30,7 @@ class AuthController implements RequestHandlerInterface
         $session = $request->getAttribute('session');
         $routeParams = $request->getAttribute('routeParameters', []);
 
-        $providerName = $routeParams['provider'] ?? 'linkedin';
+        $providerName = $routeParams['provider'] ?? 'tcp';
 
         // Get the provider instance
         $container = app();

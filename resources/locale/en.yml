@@ -66,7 +66,7 @@ lstechneighbor-tcp-oidc:
           client_secret_label: => lstechneighbor-tcp-oidc.ref.settings.client_secret
           hosted_domain_label: Hosted Domain (G suite/Google Apps for Business, optional)
 
-        linkedin:
+        tcp:
           description: Configure TCP OIDC connection. Enter your TCP server URL, client ID, and client secret.
 
           url_label: TCP Server URL
@@ -84,7 +84,7 @@ lstechneighbor-tcp-oidc:
       with_github_button: '=> lstechneighbor-tcp-oidc.forum.log_in.with_button'
       with_gitlab_button: '=> lstechneighbor-tcp-oidc.forum.log_in.with_button'
       with_google_button: '=> lstechneighbor-tcp-oidc.forum.log_in.with_button'
-      with_linkedin_button: '=> lstechneighbor-tcp-oidc.forum.log_in.with_button'
+      with_tcp_button: '=> lstechneighbor-tcp-oidc.forum.log_in.with_button'
       with_twitter_button: '=> lstechneighbor-tcp-oidc.forum.log_in.with_button'
 
     user:
@@ -106,7 +106,7 @@ lstechneighbor-tcp-oidc:
       github: '=> lstechneighbor-tcp-oidc.lib.providers.github'
       gitlab: '=> lstechneighbor-tcp-oidc.lib.providers.gitlab'
       google: '=> lstechneighbor-tcp-oidc.lib.providers.google'
-      linkedin: '=> lstechneighbor-tcp-oidc.lib.providers.linkedin'
+      tcp: '=> lstechneighbor-tcp-oidc.lib.providers.tcp'
       twitter: '=> lstechneighbor-tcp-oidc.lib.providers.twitter'
 
     signup:
@@ -126,7 +126,7 @@ lstechneighbor-tcp-oidc:
       gitlab: GitLab
       twitter: Twitter
       google: Google
-      linkedin: TCP
+      tcp: TCP
 
     gambits:
       sso:

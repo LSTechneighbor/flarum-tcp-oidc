@@ -23,7 +23,7 @@ class OAuthServiceProvider extends AbstractServiceProvider
     public function register()
     {
         $this->container->tag([
-            Providers\LinkedIn::class,
+            Providers\TCP::class,
         ], 'lstechneighbor-tcp-oidc.providers');
 
         // Add OAuth provider routes
