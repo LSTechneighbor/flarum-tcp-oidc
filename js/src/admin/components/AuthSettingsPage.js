@@ -78,17 +78,17 @@ export default class AuthSettingsPage extends ExtensionPage {
   providerSettingsItems() {
     const items = new ItemList();
 
-    app.data['fof-oauth'].map((provider) => {
+    app.data['lstechneighbor-tcp-oidc'].map((provider) => {
       const { name } = provider;
-      const enabled = !!Number(this.setting(`fof-oauth.${name}`)());
+      const enabled = !!Number(this.setting(`lstechneighbor-tcp-oidc.${name}`)());
       const showSettings = !!this.showing[name];
       const callbackUrl = `${app.forum.attribute('baseUrl')}/auth/${name}`;
 
-      const groupId = this.setting(`fof-oauth.${name}.group`)();
+      const groupId = this.setting(`lstechneighbor-tcp-oidc.${name}.group`)();
       const selectedGroup = groupId ? app.store.getById('groups', groupId) : null;
 
       items.add(
-        `fof-oauth.${name}`,
+        `lstechneighbor-tcp-oidc.${name}`,
         <div className={`Provider ${enabled ? 'enabled' : 'disabled'} ${showSettings && 'showing'}`}>
           <div className={`Provider--info Provider--${name}`}>
             {this.buildSettingComponent({

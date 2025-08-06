@@ -26,7 +26,7 @@ return [
         ->js(__DIR__.'/js/dist/admin.js')
         ->css(__DIR__.'/resources/less/admin.less')
         ->content(function (Document $document) {
-            $document->payload['fof-oauth'] = resolve('lstechneighbor-tcp-oidc.providers.admin');
+            $document->payload['lstechneighbor-tcp-oidc'] = resolve('lstechneighbor-tcp-oidc.providers.admin');
         }),
 
     new Extend\Locales(__DIR__.'/resources/locale'),
