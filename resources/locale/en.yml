@@ -1,4 +1,4 @@
-fof-oauth:
+lstechneighbor-tcp-oidc:
   admin:
     # This is used by extensions which extend fof/oauth to add additional providers
     configure_button_label: Configure with FoF OAuth
@@ -31,26 +31,26 @@ fof-oauth:
         discord:
           description: Create an app at {link}. Add the redirect URL in the OAuth2 tab.
 
-          client_id_label: => fof-oauth.ref.settings.client_id
-          client_secret_label: => fof-oauth.ref.settings.client_secret
+          client_id_label: => lstechneighbor-tcp-oidc.ref.settings.client_id
+          client_secret_label: => lstechneighbor-tcp-oidc.ref.settings.client_secret
 
         facebook:
           description: Create an app at {link}.
 
-          app_id_label: => fof-oauth.ref.settings.app_id
-          app_secret_label: => fof-oauth.ref.settings.app_secret
+          app_id_label: => lstechneighbor-tcp-oidc.ref.settings.app_id
+          app_secret_label: => lstechneighbor-tcp-oidc.ref.settings.app_secret
 
         github:
           description: Create an OAuth app at {link}.
 
-          client_id_label: => fof-oauth.ref.settings.client_id
-          client_secret_label: => fof-oauth.ref.settings.client_secret
+          client_id_label: => lstechneighbor-tcp-oidc.ref.settings.client_id
+          client_secret_label: => lstechneighbor-tcp-oidc.ref.settings.client_secret
 
         gitlab:
           description: Configure TCP OIDC connection at {link}. Give the application the <code>read_user</code> scope.
 
-          client_id_label: => fof-oauth.ref.settings.app_id
-          client_secret_label: => fof-oauth.ref.settings.app_secret
+          client_id_label: => lstechneighbor-tcp-oidc.ref.settings.app_id
+          client_secret_label: => lstechneighbor-tcp-oidc.ref.settings.app_secret
           domain_label: GitLab Domain
 
         twitter:
@@ -62,16 +62,16 @@ fof-oauth:
         google:
           description: Create an OAuth app at {link}.
 
-          client_id_label: => fof-oauth.ref.settings.client_id
-          client_secret_label: => fof-oauth.ref.settings.client_secret
+          client_id_label: => lstechneighbor-tcp-oidc.ref.settings.client_id
+          client_secret_label: => lstechneighbor-tcp-oidc.ref.settings.client_secret
           hosted_domain_label: Hosted Domain (G suite/Google Apps for Business, optional)
 
         linkedin:
           description: Configure TCP OIDC connection. Enter your TCP server URL, client ID, and client secret.
 
           url_label: TCP Server URL
-          client_id_label: => fof-oauth.ref.settings.client_id
-          client_secret_label: => fof-oauth.ref.settings.client_secret
+          client_id_label: => lstechneighbor-tcp-oidc.ref.settings.client_id
+          client_secret_label: => lstechneighbor-tcp-oidc.ref.settings.client_secret
 
   forum:
     log_in:
@@ -79,13 +79,13 @@ fof-oauth:
 
       # Modify these if your provider requires specific wording.
       # You may use {provider} in the translation.
-      with_discord_button: '=> fof-oauth.forum.log_in.with_button'
-      with_facebook_button: '=> fof-oauth.forum.log_in.with_button'
-      with_github_button: '=> fof-oauth.forum.log_in.with_button'
-      with_gitlab_button: '=> fof-oauth.forum.log_in.with_button'
-      with_google_button: '=> fof-oauth.forum.log_in.with_button'
-      with_linkedin_button: '=> fof-oauth.forum.log_in.with_button'
-      with_twitter_button: '=> fof-oauth.forum.log_in.with_button'
+      with_discord_button: '=> lstechneighbor-tcp-oidc.forum.log_in.with_button'
+      with_facebook_button: '=> lstechneighbor-tcp-oidc.forum.log_in.with_button'
+      with_github_button: '=> lstechneighbor-tcp-oidc.forum.log_in.with_button'
+      with_gitlab_button: '=> lstechneighbor-tcp-oidc.forum.log_in.with_button'
+      with_google_button: '=> lstechneighbor-tcp-oidc.forum.log_in.with_button'
+      with_linkedin_button: '=> lstechneighbor-tcp-oidc.forum.log_in.with_button'
+      with_twitter_button: '=> lstechneighbor-tcp-oidc.forum.log_in.with_button'
 
     user:
       settings:
@@ -101,13 +101,13 @@ fof-oauth:
     # Modify these if you need to change how the provider name
     # appears in the log in button.
     providers:
-      discord: '=> fof-oauth.lib.providers.discord'
-      facebook: '=> fof-oauth.lib.providers.facebook'
-      github: '=> fof-oauth.lib.providers.github'
-      gitlab: '=> fof-oauth.lib.providers.gitlab'
-      google: '=> fof-oauth.lib.providers.google'
-      linkedin: '=> fof-oauth.lib.providers.linkedin'
-      twitter: '=> fof-oauth.lib.providers.twitter'
+      discord: '=> lstechneighbor-tcp-oidc.lib.providers.discord'
+      facebook: '=> lstechneighbor-tcp-oidc.lib.providers.facebook'
+      github: '=> lstechneighbor-tcp-oidc.lib.providers.github'
+      gitlab: '=> lstechneighbor-tcp-oidc.lib.providers.gitlab'
+      google: '=> lstechneighbor-tcp-oidc.lib.providers.google'
+      linkedin: '=> lstechneighbor-tcp-oidc.lib.providers.linkedin'
+      twitter: '=> lstechneighbor-tcp-oidc.lib.providers.twitter'
 
     signup:
       username_help: Please choose a username to be known by here

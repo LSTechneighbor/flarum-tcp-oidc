@@ -22,7 +22,9 @@ return [
         ->js(__DIR__.'/js/dist/forum.js')
         ->css(__DIR__.'/resources/less/forum.less')
         ->content(function (Document $document) {
-            $document->payload['lstechneighbor-tcp-oidc'] = resolve('lstechneighbor-tcp-oidc.providers.forum');
+            $providers = resolve('lstechneighbor-tcp-oidc.providers.forum');
+            error_log('TCP OIDC Debug: Forum payload providers: ' . json_encode($providers));
+            $document->payload['lstechneighbor-tcp-oidc'] = $providers;
         }),
 
     (new Extend\Frontend('admin'))
@@ -61,7 +63,8 @@ return [
         ->serializeToForum('lstechneighbor-tcp-oidc.popupWidth', 'lstechneighbor-tcp-oidc.popupWidth', 'intval')
         ->serializeToForum('lstechneighbor-tcp-oidc.popupHeight', 'lstechneighbor-tcp-oidc.popupHeight', 'intval')
         ->serializeToForum('lstechneighbor-tcp-oidc.fullscreenPopup', 'lstechneighbor-tcp-oidc.fullscreenPopup', 'boolVal')
-        ->default('lstechneighbor-tcp-oidc.log-oauth-errors', false),
+        ->default('lstechneighbor-tcp-oidc.log-oauth-errors', false)
+        ->default('lstechneighbor-tcp-oidc.linkedin', true),
 
     (new Extend\Event())
         ->listen(RegisteringFromProvider::class, Listeners\AssignGroupToUser::class)

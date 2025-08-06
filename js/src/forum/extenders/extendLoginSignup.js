@@ -47,8 +47,8 @@ export default function () {
         name,
         <div className={`LogInButtonContainer LogInButtonContainer--${name}`}>
           <LogInButton className={className} icon={icon} path={`/auth/${name}`} disabled={app.fof_oauth_loginInProgress}>
-            {app.translator.trans(`fof-oauth.forum.log_in.with_${name}_button`, {
-              provider: app.translator.trans(`fof-oauth.forum.providers.${name}`),
+            {app.translator.trans(`lstechneighbor-tcp-oidc.forum.log_in.with_${name}_button`, {
+              provider: app.translator.trans(`lstechneighbor-tcp-oidc.forum.providers.${name}`),
             })}
           </LogInButton>
         </div>,
@@ -138,7 +138,7 @@ export default function () {
       items.add(
         'username-help',
         <div>
-          <p>{app.translator.trans('fof-oauth.forum.signup.username_help')}</p>
+          <p>{app.translator.trans('lstechneighbor-tcp-oidc.forum.signup.username_help')}</p>
         </div>,
         35
       );
