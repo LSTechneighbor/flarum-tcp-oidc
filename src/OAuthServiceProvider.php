@@ -86,6 +86,7 @@ class OAuthServiceProvider extends AbstractServiceProvider
     protected function mapProviders(bool $admin = false): array
     {
         $providers = $this->container->tagged('lstechneighbor-tcp-oidc.providers');
+        error_log('TCP OIDC Debug: Found ' . count(iterator_to_array($providers)) . ' tagged providers');
 
         if ($admin) {
             return array_map(function (Provider $provider) {
@@ -109,6 +110,11 @@ class OAuthServiceProvider extends AbstractServiceProvider
                 'priority' => $provider->priority(),
             ];
         }, iterator_to_array($providers));
+
+        // Filter out null values
+        $result = array_filter($result, function ($provider) {
+            return $provider !== null;
+        });
 
         // Debug logging
         error_log('TCP OIDC Debug - Providers: ' . json_encode($result));

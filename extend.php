@@ -22,9 +22,14 @@ return [
         ->js(__DIR__.'/js/dist/forum.js')
         ->css(__DIR__.'/resources/less/forum.less')
         ->content(function (Document $document) {
-            $providers = resolve('lstechneighbor-tcp-oidc.providers.forum');
-            error_log('TCP OIDC Debug: Forum payload providers: ' . json_encode($providers));
-            $document->payload['lstechneighbor-tcp-oidc'] = $providers;
+            try {
+                $providers = resolve('lstechneighbor-tcp-oidc.providers.forum');
+                error_log('TCP OIDC Debug: Forum payload providers: ' . json_encode($providers));
+                $document->payload['lstechneighbor-tcp-oidc'] = $providers;
+            } catch (\Exception $e) {
+                error_log('TCP OIDC Debug: Error resolving forum providers: ' . $e->getMessage());
+                $document->payload['lstechneighbor-tcp-oidc'] = [];
+            }
         }),
 
     (new Extend\Frontend('admin'))
@@ -49,7 +54,10 @@ return [
     // Removed ProviderResource as it's not needed for our TCP OIDC extension
 
     (new Extend\ServiceProvider())
-        ->register(OAuthServiceProvider::class),
+        ->register(OAuthServiceProvider::class)
+        ->register(function ($container) {
+            error_log('TCP OIDC Debug: Service provider registered');
+        }),
 
     // Removed API resource extensions as they're not needed for our TCP OIDC extension
 
