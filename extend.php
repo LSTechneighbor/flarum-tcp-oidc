@@ -11,15 +11,10 @@
 
 namespace LSTechNeighbor\TCPOIDC;
 
-use Flarum\Api\Context;
-use Flarum\Api\Resource;
-use Flarum\Api\Schema;
 use Flarum\Extend;
 use Flarum\Frontend\Document;
-use Flarum\Search\Database\DatabaseSearchDriver;
 use Flarum\User\Event\LoggedOut;
 use Flarum\User\Event\RegisteringFromProvider;
-use Flarum\User\Search\UserSearcher;
 use LSTechNeighbor\TCPOIDC\Events\OAuthLoginSuccessful;
 
 return [
@@ -44,17 +39,14 @@ return [
         ->add(Middleware\BindRequest::class),
 
     (new Extend\Routes('forum'))
-        ->get('/auth/twitter', 'auth.twitter', Controllers\TwitterAuthController::class),
+        ->get('/auth/linkedin', 'auth.linkedin', Controllers\AuthController::class),
 
-    new Extend\ApiResource(Api\Resource\ProviderResource::class),
+    // Removed ProviderResource as it's not needed for our TCP OIDC extension
 
     (new Extend\ServiceProvider())
         ->register(OAuthServiceProvider::class),
 
-    (new Extend\ApiResource(Resource\ForumResource::class))
-        ->fields(Api\AddForumAttributes::class),
-    (new Extend\ApiResource(Resource\UserResource::class))
-        ->fields(Api\AddUserAttributes::class),
+    // Removed API resource extensions as they're not needed for our TCP OIDC extension
 
     (new Extend\Settings())
         ->default('fof-oauth.only_icons', false)
@@ -74,14 +66,5 @@ return [
         ->listen(LoggedOut::class, Listeners\HandleLogout::class)
         ->subscribe(Listeners\ClearOAuthCache::class),
 
-    (new Extend\Conditional())
-        ->whenExtensionEnabled('flarum-gdpr', fn () => [
-            (new Extend\ApiResource(Resource\ForumResource::class))
-                ->fields(fn () => [
-                    Schema\Str::make('passwordlessSignUp')
-                        ->get(fn ($model, Context $context) => !$context->getActor()->isGuest() && $context->getActor()->loginProviders()->count() > 0),
-                ]),
-        ]),
-    (new Extend\SearchDriver(DatabaseSearchDriver::class))
-        ->addFilter(UserSearcher::class, Query\SsoIdFilter::class),
+    // Removed conditional and search extensions as they're not needed for our TCP OIDC extension
 ];
