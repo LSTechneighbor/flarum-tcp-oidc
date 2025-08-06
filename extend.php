@@ -41,8 +41,8 @@ return [
     (new Extend\Routes('forum'))
         ->get('/auth/linkedin', 'auth.linkedin', Controllers\AuthController::class),
 
-    (new Extend\ApiSerializer('forum'))
-        ->attributes(Api\AddForumAttributes::class),
+    (new Extend\Api())
+        ->serializer('forum', Api\AddForumAttributes::class),
 
     (new Extend\ServiceProvider())
         ->register(OAuthServiceProvider::class),
