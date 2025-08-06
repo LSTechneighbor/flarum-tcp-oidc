@@ -23,8 +23,7 @@ export default function () {
     console.log('TCP OIDC Debug:', {
       onlyIcons,
       buttons,
-      forumAttributes: app.forum.attribute('lstechneighbor-tcp-oidc'),
-      allAttributes: Object.keys(app.forum.attributes())
+      forumAttributes: app.forum.attribute('lstechneighbor-tcp-oidc')
     });
     
     // Safety check - if no buttons, don't proceed

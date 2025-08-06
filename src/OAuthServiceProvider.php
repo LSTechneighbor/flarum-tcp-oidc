@@ -92,7 +92,7 @@ class OAuthServiceProvider extends AbstractServiceProvider
             }, iterator_to_array($providers));
         }
 
-        return array_map(function (Provider $provider) {
+        $result = array_map(function (Provider $provider) {
             if (!$provider->enabled()) {
                 return null;
             }
@@ -103,5 +103,11 @@ class OAuthServiceProvider extends AbstractServiceProvider
                 'priority' => $provider->priority(),
             ];
         }, iterator_to_array($providers));
+
+        // Debug logging
+        error_log('TCP OIDC Debug - Providers: ' . json_encode($result));
+        error_log('TCP OIDC Debug - Admin mode: ' . ($admin ? 'true' : 'false'));
+
+        return $result;
     }
 } 
