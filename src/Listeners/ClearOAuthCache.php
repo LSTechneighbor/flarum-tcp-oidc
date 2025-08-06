@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace FoF\OAuth\Listeners;
+namespace LSTechNeighbor\TCPOIDC\Listeners;
 
 use Flarum\Extension\Event\Disabling;
 use Flarum\Extension\Event\Enabling;
@@ -35,14 +35,14 @@ class ClearOAuthCache
 
     public function clearOauthCache()
     {
-        $this->cache->forget('fof-oauth.providers.forum');
-        $this->cache->forget('fof-oauth.providers.admin');
+        $this->cache->forget('lstechneighbor-tcp-oidc.providers.forum');
+        $this->cache->forget('lstechneighbor-tcp-oidc.providers.admin');
     }
 
     public function settingsSaved(Saving $event)
     {
         foreach (array_keys($event->settings) as $key) {
-            if (Str::startsWith($key, 'fof-oauth')) {
+            if (Str::startsWith($key, 'lstechneighbor-tcp-oidc')) {
                 $this->clearOauthCache();
                 break; // Exit the loop once the cache is cleared
             }

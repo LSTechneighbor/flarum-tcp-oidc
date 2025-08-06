@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace FoF\OAuth\Listeners;
+namespace LSTechNeighbor\TCPOIDC\Listeners;
 
 use Flarum\Settings\SettingsRepositoryInterface;
 use FoF\Extend\Events\OAuthLoginSuccessful;

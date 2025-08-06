@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace FoF\OAuth\Listeners;
+namespace LSTechNeighbor\TCPOIDC\Listeners;
 
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\Event\RegisteringFromProvider;
@@ -39,7 +39,7 @@ class AssignGroupToUser
         $user = $event->user;
 
         // Get the group ID for this provider
-        $groupId = $this->settings->get("fof-oauth.{$provider}.group");
+        $groupId = $this->settings->get("lstechneighbor-tcp-oidc.{$provider}.group");
 
         // If a group is specified, assign it to the user
         if ($groupId && is_numeric($groupId)) {
