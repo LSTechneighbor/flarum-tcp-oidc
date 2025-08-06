@@ -49,16 +49,16 @@ return [
     // Removed API resource extensions as they're not needed for our TCP OIDC extension
 
     (new Extend\Settings())
-        ->default('fof-oauth.only_icons', false)
-        ->default('fof-oauth.update_email_from_provider', true)
-        ->serializeToForum('fof-oauth.only_icons', 'fof-oauth.only_icons', 'boolVal')
-        ->default('fof-oauth.popupWidth', 580)
-        ->default('fof-oauth.popupHeight', 400)
-        ->default('fof-oauth.fullscreenPopup', true)
-        ->serializeToForum('fof-oauth.popupWidth', 'fof-oauth.popupWidth', 'intval')
-        ->serializeToForum('fof-oauth.popupHeight', 'fof-oauth.popupHeight', 'intval')
-        ->serializeToForum('fof-oauth.fullscreenPopup', 'fof-oauth.fullscreenPopup', 'boolVal')
-        ->default('fof-oauth.log-oauth-errors', false),
+        ->default('lstechneighbor-tcp-oidc.only_icons', false)
+        ->default('lstechneighbor-tcp-oidc.update_email_from_provider', true)
+        ->serializeToForum('lstechneighbor-tcp-oidc.only_icons', 'lstechneighbor-tcp-oidc.only_icons', 'boolVal')
+        ->default('lstechneighbor-tcp-oidc.popupWidth', 580)
+        ->default('lstechneighbor-tcp-oidc.popupHeight', 400)
+        ->default('lstechneighbor-tcp-oidc.fullscreenPopup', true)
+        ->serializeToForum('lstechneighbor-tcp-oidc.popupWidth', 'lstechneighbor-tcp-oidc.popupWidth', 'intval')
+        ->serializeToForum('lstechneighbor-tcp-oidc.popupHeight', 'lstechneighbor-tcp-oidc.popupHeight', 'intval')
+        ->serializeToForum('lstechneighbor-tcp-oidc.fullscreenPopup', 'lstechneighbor-tcp-oidc.fullscreenPopup', 'boolVal')
+        ->default('lstechneighbor-tcp-oidc.log-oauth-errors', false),
 
     (new Extend\Event())
         ->listen(RegisteringFromProvider::class, Listeners\AssignGroupToUser::class)

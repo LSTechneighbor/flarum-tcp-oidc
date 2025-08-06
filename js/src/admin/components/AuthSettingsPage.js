@@ -20,24 +20,24 @@ export default class AuthSettingsPage extends ExtensionPage {
           <form className="Form">
             {this.buildSettingComponent({
               type: 'boolean',
-              setting: 'fof-oauth.only_icons',
+              setting: 'lstechneighbor-tcp-oidc.only_icons',
               label: app.translator.trans(`fof-oauth.admin.settings.only_icons_label`),
             })}
             {this.buildSettingComponent({
               type: 'boolean',
-              setting: 'fof-oauth.update_email_from_provider',
+              setting: 'lstechneighbor-tcp-oidc.update_email_from_provider',
               label: app.translator.trans('fof-oauth.admin.settings.update_email_from_provider_label'),
               help: app.translator.trans('fof-oauth.admin.settings.update_email_from_provider_help'),
             })}
             {this.buildSettingComponent({
               type: 'boolean',
-              setting: 'fof-oauth.fullscreenPopup',
+              setting: 'lstechneighbor-tcp-oidc.fullscreenPopup',
               label: app.translator.trans('fof-oauth.admin.settings.fullscreen_popup_label'),
               help: app.translator.trans('fof-oauth.admin.settings.fullscreen_popup_help'),
             })}
             {this.buildSettingComponent({
               type: 'number',
-              setting: 'fof-oauth.popupWidth',
+              setting: 'lstechneighbor-tcp-oidc.popupWidth',
               label: app.translator.trans('fof-oauth.admin.settings.popup_width_label'),
               help: app.translator.trans('fof-oauth.admin.settings.popup_width_help'),
               placeholder: 580,
@@ -45,7 +45,7 @@ export default class AuthSettingsPage extends ExtensionPage {
             })}
             {this.buildSettingComponent({
               type: 'number',
-              setting: 'fof-oauth.popupHeight',
+              setting: 'lstechneighbor-tcp-oidc.popupHeight',
               label: app.translator.trans('fof-oauth.admin.settings.popup_height_label'),
               help: app.translator.trans('fof-oauth.admin.settings.popup_height_help'),
               placeholder: 400,
@@ -60,12 +60,12 @@ export default class AuthSettingsPage extends ExtensionPage {
 
             <div className="AuthSettingsPage--advanced">
               <h4>{app.translator.trans('fof-oauth.admin.settings.advanced.heading')}</h4>
-              {this.buildSettingComponent({
-                type: 'boolean',
-                setting: 'fof-oauth.log-oauth-errors',
-                label: app.translator.trans('fof-oauth.admin.settings.advanced.log-oauth-errors-label'),
-                help: app.translator.trans('fof-oauth.admin.settings.advanced.log-oauth-errors-help'),
-              })}
+                          {this.buildSettingComponent({
+              type: 'boolean',
+              setting: 'lstechneighbor-tcp-oidc.log-oauth-errors',
+              label: app.translator.trans('fof-oauth.admin.settings.advanced.log-oauth-errors-label'),
+              help: app.translator.trans('fof-oauth.admin.settings.advanced.log-oauth-errors-help'),
+            })}
             </div>
 
             {this.submitButton()}
@@ -93,7 +93,7 @@ export default class AuthSettingsPage extends ExtensionPage {
           <div className={`Provider--info Provider--${name}`}>
             {this.buildSettingComponent({
               type: 'boolean',
-              setting: `fof-oauth.${name}`,
+              setting: `lstechneighbor-tcp-oidc.${name}`,
               label: (
                 <div>
                   {provider.icon === 'tcp-text' ? (
@@ -149,7 +149,7 @@ export default class AuthSettingsPage extends ExtensionPage {
               {Object.keys(provider.fields).map((field) =>
                 this.buildSettingComponent({
                   type: 'string',
-                  setting: `fof-oauth.${name}.${field}`,
+                  setting: `lstechneighbor-tcp-oidc.${name}.${field}`,
                   label: app.translator.trans(`fof-oauth.admin.settings.providers.${name}.${field}_label`),
                   required: {
                     [showSettings && provider.fields[field].includes('required') ? 'required' : null]: true,
@@ -183,7 +183,7 @@ export default class AuthSettingsPage extends ExtensionPage {
         <div className="helpText">{app.translator.trans('fof-oauth.admin.settings.providers.group_help')}</div>
 
         {(() => {
-          const groupId = this.setting(`fof-oauth.${name}.group`)();
+          const groupId = this.setting(`lstechneighbor-tcp-oidc.${name}.group`)();
           const selectedGroup = groupId ? app.store.getById('groups', groupId) : null;
           const icons = {
             1: 'fas fa-check', // Admins
@@ -199,16 +199,16 @@ export default class AuthSettingsPage extends ExtensionPage {
                   : app.translator.trans('fof-oauth.admin.settings.providers.no_group_label')
               }
               buttonClassName="Button"
-              disabled={!this.setting(`fof-oauth.${name}`)()}
+              disabled={!this.setting(`lstechneighbor-tcp-oidc.${name}`)()}
             >
-              <Button icon="fas fa-times" onclick={() => this.setting(`fof-oauth.${name}.group`)('')} active={!groupId}>
+                              <Button icon="fas fa-times" onclick={() => this.setting(`lstechneighbor-tcp-oidc.${name}.group`)('')} active={!groupId}>
                 {app.translator.trans('fof-oauth.admin.settings.providers.no_group_label')}
               </Button>
 
               {this.getAvailableGroups().map((group) => (
                 <Button
                   icon={group.icon() || icons[group.id()]}
-                  onclick={() => this.setting(`fof-oauth.${name}.group`)(group.id())}
+                  onclick={() => this.setting(`lstechneighbor-tcp-oidc.${name}.group`)(group.id())}
                   active={groupId === group.id()}
                   key={group.id()}
                 >

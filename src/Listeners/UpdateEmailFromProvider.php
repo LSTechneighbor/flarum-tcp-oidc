@@ -13,7 +13,7 @@ namespace LSTechNeighbor\TCPOIDC\Listeners;
 
 use Flarum\Settings\SettingsRepositoryInterface;
 use FoF\Extend\Events\OAuthLoginSuccessful;
-use FoF\OAuth\Jobs\CheckAndUpdateUserEmail;
+use LSTechNeighbor\TCPOIDC\Jobs\CheckAndUpdateUserEmail;
 use Illuminate\Contracts\Bus\Dispatcher;
 
 class UpdateEmailFromProvider

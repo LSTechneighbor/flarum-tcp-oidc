@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace FoF\OAuth\Events;
+namespace LSTechNeighbor\TCPOIDC\Events;
 
 use Flarum\Forum\Auth\Registration;
 use League\OAuth2\Client\Provider\ResourceOwnerInterface;

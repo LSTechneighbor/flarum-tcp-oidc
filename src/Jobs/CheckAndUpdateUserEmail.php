@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace FoF\OAuth\Jobs;
+namespace LSTechNeighbor\TCPOIDC\Jobs;
 
 use Flarum\User\LoginProvider;
 use Flarum\User\User;

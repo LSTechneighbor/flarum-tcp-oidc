@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace FoF\OAuth\Middleware;
+namespace LSTechNeighbor\TCPOIDC\Middleware;
 
 use Illuminate\Contracts\Container\Container;
 use Psr\Http\Message\ResponseInterface;

@@ -9,12 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace FoF\OAuth;
+namespace LSTechNeighbor\TCPOIDC;
 
 use Exception;
 use Flarum\Http\Exception\RouteNotFoundException;
 use FoF\Extend\Controllers\AbstractOAuthController;
-use FoF\OAuth\Errors\AuthenticationException;
+use LSTechNeighbor\TCPOIDC\Errors\AuthenticationException;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

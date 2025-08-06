@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace FoF\OAuth\Controllers;
+namespace LSTechNeighbor\TCPOIDC\Controllers;
 
 use Flarum\Forum\Auth\Registration;
 use Flarum\Forum\Auth\ResponseFactory;
@@ -19,7 +19,7 @@ use Flarum\Http\UrlGenerator;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\LoginProvider;
 use Flarum\User\User as FlarumUser;
-use FoF\OAuth\Errors\AuthenticationException;
+use LSTechNeighbor\TCPOIDC\Errors\AuthenticationException;
 use Illuminate\Session\Store;
 use Illuminate\Support\Arr;
 use Laminas\Diactoros\Response\HtmlResponse;

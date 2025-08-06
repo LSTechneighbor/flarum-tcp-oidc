@@ -9,12 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace FoF\OAuth\Middleware;
+namespace LSTechNeighbor\TCPOIDC\Middleware;
 
 use Flarum\Foundation\Config;
 use Flarum\Foundation\ErrorHandling\Reporter;
 use Flarum\Locale\TranslatorInterface;
-use FoF\OAuth\Errors\AuthenticationException;
+use LSTechNeighbor\TCPOIDC\Errors\AuthenticationException;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\View\Factory as ViewFactory;
 use Illuminate\Support\Arr;
