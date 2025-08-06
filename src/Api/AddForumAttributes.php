@@ -1,15 +1,15 @@
 <?php
 
 /*
- * This file is part of fof/oauth.
+ * This file is part of lstechneighbor/flarum-tcp-oidc.
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) Larry Squitieri.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace FoF\OAuth\Api;
+namespace LSTechNeighbor\TCPOIDC\Api;
 
 use Flarum\Api\Context;
 use Flarum\Api\Schema;
@@ -20,14 +20,9 @@ class AddForumAttributes
     {
         return [
             // This attribute is used to display the OAuth providers on the login page
-            Schema\Str::make('fof-oauth')
+            Schema\Str::make('lstechneighbor-tcp-oidc')
                 ->visible(fn ($model, Context $context) => $context->getActor()->isGuest())
-                ->get(fn () => resolve('fof-oauth.providers.forum')),
-
-            // This attribute is used to check if the user can moderate OAuth providers
-            Schema\Boolean::make('fofOauthModerate')
-                ->hidden(fn ($model, Context $context) => $context->getActor()->isGuest())
-                ->get(fn ($model, Context $context) => $context->getActor()->can('moderateUserProviders')),
+                ->get(fn () => resolve('lstechneighbor-tcp-oidc.providers.forum')),
         ];
     }
 }

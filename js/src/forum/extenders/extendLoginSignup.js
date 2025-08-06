@@ -18,12 +18,8 @@ export default function () {
   extend(LogInButtons.prototype, 'items', function (items) {
     const onlyIcons = !!app.forum.attribute('lstechneighbor-tcp-oidc.only_icons');
     
-    // Try multiple ways to get the buttons data
-    let buttons = app.forum.attribute('lstechneighbor-tcp-oidc') || [];
-    if (!buttons || buttons.length === 0) {
-      // Try alternative access methods
-      buttons = app.forum.data?.attributes?.['lstechneighbor-tcp-oidc'] || [];
-    }
+    // Get the buttons data from forum attributes
+    const buttons = app.forum.attribute('lstechneighbor-tcp-oidc') || [];
     
     // Debug logging
     console.log('TCP OIDC Debug:', {
