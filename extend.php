@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace FoF\OAuth;
+namespace LSTechNeighbor\TCPOIDC;
 
 use Flarum\Api\Context;
 use Flarum\Api\Resource;
@@ -20,7 +20,7 @@ use Flarum\Search\Database\DatabaseSearchDriver;
 use Flarum\User\Event\LoggedOut;
 use Flarum\User\Event\RegisteringFromProvider;
 use Flarum\User\Search\UserSearcher;
-use FoF\Extend\Events\OAuthLoginSuccessful;
+use LSTechNeighbor\TCPOIDC\Events\OAuthLoginSuccessful;
 
 return [
     (new Extend\Frontend('forum'))
@@ -31,7 +31,7 @@ return [
         ->js(__DIR__.'/js/dist/admin.js')
         ->css(__DIR__.'/resources/less/admin.less')
         ->content(function (Document $document) {
-            $document->payload['fof-oauth'] = resolve('fof-oauth.providers.admin');
+            $document->payload['fof-oauth'] = resolve('lstechneighbor-tcp-oidc.providers.admin');
         }),
 
     new Extend\Locales(__DIR__.'/resources/locale'),

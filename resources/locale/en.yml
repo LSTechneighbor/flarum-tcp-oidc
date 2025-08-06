@@ -60,7 +60,7 @@ fof-oauth:
           api_secret_label: API Secret
 
         google:
-          description: Configure TCP OIDC connection at {link}.
+          description: Create an OAuth app at {link}.
 
           client_id_label: => fof-oauth.ref.settings.client_id
           client_secret_label: => fof-oauth.ref.settings.client_secret
