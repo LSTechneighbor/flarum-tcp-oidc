@@ -54,10 +54,7 @@ return [
     // Removed ProviderResource as it's not needed for our TCP OIDC extension
 
     (new Extend\ServiceProvider())
-        ->register(OAuthServiceProvider::class)
-        ->register(function ($container) {
-            error_log('TCP OIDC Debug: Service provider registered');
-        }),
+        ->register(OAuthServiceProvider::class),
 
     // Removed API resource extensions as they're not needed for our TCP OIDC extension
 
