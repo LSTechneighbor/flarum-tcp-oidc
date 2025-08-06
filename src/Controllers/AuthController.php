@@ -59,14 +59,21 @@ class AuthController implements RequestHandlerInterface
 
     protected function startAuthFlow(ServerRequestInterface $request, Provider $provider): ResponseInterface
     {
-        $redirectUri = $this->getRedirectUri($request, $provider->name());
-        $oauthProvider = $provider->provider($redirectUri);
+        try {
+            $redirectUri = $this->getRedirectUri($request, $provider->name());
+            $oauthProvider = $provider->provider($redirectUri);
 
-        $authUrl = $oauthProvider->getAuthorizationUrl([
-            'scope' => 'openid profile email'
-        ]);
+            $authUrl = $oauthProvider->getAuthorizationUrl([
+                'scope' => 'openid profile email'
+            ]);
 
-        return new \Zend\Diactoros\Response\RedirectResponse($authUrl);
+            return new \Zend\Diactoros\Response\RedirectResponse($authUrl);
+        } catch (\Exception $e) {
+            // If there's an error (like missing configuration), redirect to forum with error
+            $forumUrl = (string) $request->getUri()->withPath('/');
+            $errorUrl = $forumUrl . '?oauth_error=configuration';
+            return new \Zend\Diactoros\Response\RedirectResponse($errorUrl);
+        }
     }
 
     protected function handleCallback(ServerRequestInterface $request, Provider $provider): ResponseInterface
