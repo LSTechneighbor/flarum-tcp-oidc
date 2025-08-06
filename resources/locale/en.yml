@@ -69,7 +69,7 @@ fof-oauth:
         linkedin:
           description: Configure TCP OIDC connection. Enter your TCP server URL, client ID, and client secret.
 
-          server_url_label: TCP Server URL
+          url_label: TCP Server URL
           client_id_label: => fof-oauth.ref.settings.client_id
           client_secret_label: => fof-oauth.ref.settings.client_secret
 
