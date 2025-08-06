@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace FoF\OAuth;
+namespace LSTechNeighbor\TCPOIDC;
 
 use Flarum\Forum\Auth\Registration;
 use Flarum\Settings\SettingsRepositoryInterface;
-use FoF\OAuth\Errors\AuthenticationException;
+use LSTechNeighbor\TCPOIDC\Errors\AuthenticationException;
 use League\OAuth2\Client\Provider\AbstractProvider;
 
 abstract class Provider
@@ -64,12 +64,12 @@ abstract class Provider
 
     public function enabled()
     {
-        return $this->settings->get("fof-oauth.{$this->name()}");
+        return $this->settings->get("lstechneighbor-tcp-oidc.{$this->name()}");
     }
 
     protected function getSetting($key): string
     {
-        return $this->settings->get("fof-oauth.{$this->name()}.{$key}") ?? '';
+        return $this->settings->get("lstechneighbor-tcp-oidc.{$this->name()}.{$key}") ?? '';
     }
 
     protected function verifyEmail(?string $email)
