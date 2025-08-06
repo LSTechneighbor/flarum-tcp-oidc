@@ -21,33 +21,33 @@ export default class AuthSettingsPage extends ExtensionPage {
             {this.buildSettingComponent({
               type: 'boolean',
               setting: 'lstechneighbor-tcp-oidc.only_icons',
-              label: app.translator.trans(`fof-oauth.admin.settings.only_icons_label`),
+              label: app.translator.trans(`lstechneighbor-tcp-oidc.admin.settings.only_icons_label`),
             })}
             {this.buildSettingComponent({
               type: 'boolean',
               setting: 'lstechneighbor-tcp-oidc.update_email_from_provider',
-              label: app.translator.trans('fof-oauth.admin.settings.update_email_from_provider_label'),
-              help: app.translator.trans('fof-oauth.admin.settings.update_email_from_provider_help'),
+              label: app.translator.trans('lstechneighbor-tcp-oidc.admin.settings.update_email_from_provider_label'),
+              help: app.translator.trans('lstechneighbor-tcp-oidc.admin.settings.update_email_from_provider_help'),
             })}
             {this.buildSettingComponent({
               type: 'boolean',
               setting: 'lstechneighbor-tcp-oidc.fullscreenPopup',
-              label: app.translator.trans('fof-oauth.admin.settings.fullscreen_popup_label'),
-              help: app.translator.trans('fof-oauth.admin.settings.fullscreen_popup_help'),
+              label: app.translator.trans('lstechneighbor-tcp-oidc.admin.settings.fullscreen_popup_label'),
+              help: app.translator.trans('lstechneighbor-tcp-oidc.admin.settings.fullscreen_popup_help'),
             })}
             {this.buildSettingComponent({
               type: 'number',
               setting: 'lstechneighbor-tcp-oidc.popupWidth',
-              label: app.translator.trans('fof-oauth.admin.settings.popup_width_label'),
-              help: app.translator.trans('fof-oauth.admin.settings.popup_width_help'),
+              label: app.translator.trans('lstechneighbor-tcp-oidc.admin.settings.popup_width_label'),
+              help: app.translator.trans('lstechneighbor-tcp-oidc.admin.settings.popup_width_help'),
               placeholder: 580,
               min: 0,
             })}
             {this.buildSettingComponent({
               type: 'number',
               setting: 'lstechneighbor-tcp-oidc.popupHeight',
-              label: app.translator.trans('fof-oauth.admin.settings.popup_height_label'),
-              help: app.translator.trans('fof-oauth.admin.settings.popup_height_help'),
+              label: app.translator.trans('lstechneighbor-tcp-oidc.admin.settings.popup_height_label'),
+              help: app.translator.trans('lstechneighbor-tcp-oidc.admin.settings.popup_height_help'),
               placeholder: 400,
               min: 0,
             })}
@@ -59,12 +59,12 @@ export default class AuthSettingsPage extends ExtensionPage {
             <hr />
 
             <div className="AuthSettingsPage--advanced">
-              <h4>{app.translator.trans('fof-oauth.admin.settings.advanced.heading')}</h4>
+              <h4>{app.translator.trans('lstechneighbor-tcp-oidc.admin.settings.advanced.heading')}</h4>
                           {this.buildSettingComponent({
               type: 'boolean',
               setting: 'lstechneighbor-tcp-oidc.log-oauth-errors',
-              label: app.translator.trans('fof-oauth.admin.settings.advanced.log-oauth-errors-label'),
-              help: app.translator.trans('fof-oauth.admin.settings.advanced.log-oauth-errors-help'),
+              label: app.translator.trans('lstechneighbor-tcp-oidc.admin.settings.advanced.log-oauth-errors-label'),
+              help: app.translator.trans('lstechneighbor-tcp-oidc.admin.settings.advanced.log-oauth-errors-help'),
             })}
             </div>
 
@@ -101,7 +101,7 @@ export default class AuthSettingsPage extends ExtensionPage {
                   ) : (
                     <Icon name={provider.icon} />
                   )}
-                  <span>{app.translator.trans(`fof-oauth.lib.providers.${name}`)}</span>
+                  <span>{app.translator.trans(`lstechneighbor-tcp-oidc.lib.providers.${name}`)}</span>
                 </div>
               ),
             })}
@@ -117,7 +117,7 @@ export default class AuthSettingsPage extends ExtensionPage {
             <Button
               className={`Button Button--rounded ${this.showing[name] && 'active'}`}
               onclick={() => (this.showing[name] = !showSettings)}
-              aria-label={app.translator.trans('fof-oauth.admin.settings_accessibility_label', {
+              aria-label={app.translator.trans('lstechneighbor-tcp-oidc.admin.settings_accessibility_label', {
                 name,
               })}
             >
@@ -128,7 +128,7 @@ export default class AuthSettingsPage extends ExtensionPage {
           <div className="Provider--settings" inert={!showSettings}>
             <div>
               <p>
-                {app.translator.trans(`fof-oauth.admin.settings.providers.${name}.description`, {
+                {app.translator.trans(`lstechneighbor-tcp-oidc.admin.settings.providers.${name}.description`, {
                   link: (
                     <a href={provider.link} target="_blank">
                       {provider.link}
@@ -137,7 +137,7 @@ export default class AuthSettingsPage extends ExtensionPage {
                 })}
               </p>
               <p>
-                {app.translator.trans(`fof-oauth.admin.settings.providers.callback_url_text`, {
+                {app.translator.trans(`lstechneighbor-tcp-oidc.admin.settings.providers.callback_url_text`, {
                   url: (
                     <a href={callbackUrl} target="_blank">
                       {callbackUrl}
@@ -146,16 +146,18 @@ export default class AuthSettingsPage extends ExtensionPage {
                 })}
               </p>
 
-              {Object.keys(provider.fields).map((field) =>
-                this.buildSettingComponent({
-                  type: 'string',
+              {Object.keys(provider.fields).map((field) => {
+                const fieldType = field === 'url' ? 'string' : 'string';
+                const isRequired = provider.fields[field].includes('required');
+                
+                return this.buildSettingComponent({
+                  type: fieldType,
                   setting: `lstechneighbor-tcp-oidc.${name}.${field}`,
-                  label: app.translator.trans(`fof-oauth.admin.settings.providers.${name}.${field}_label`),
-                  required: {
-                    [showSettings && provider.fields[field].includes('required') ? 'required' : null]: true,
-                  },
-                })
-              )}
+                  label: app.translator.trans(`lstechneighbor-tcp-oidc.admin.settings.providers.${name}.${field}_label`),
+                  required: isRequired,
+                  placeholder: field === 'url' ? 'https://your-tcp-server.com' : '',
+                });
+              })}
 
               {this.customProviderSettings(name).toArray()}
             </div>
@@ -179,8 +181,8 @@ export default class AuthSettingsPage extends ExtensionPage {
     items.add(
       'group',
       <div className="Form-group">
-        <label>{app.translator.trans('fof-oauth.admin.settings.providers.group_label')}</label>
-        <div className="helpText">{app.translator.trans('fof-oauth.admin.settings.providers.group_help')}</div>
+        <label>{app.translator.trans('lstechneighbor-tcp-oidc.admin.settings.providers.group_label')}</label>
+        <div className="helpText">{app.translator.trans('lstechneighbor-tcp-oidc.admin.settings.providers.group_help')}</div>
 
         {(() => {
           const groupId = this.setting(`lstechneighbor-tcp-oidc.${name}.group`)();
@@ -196,13 +198,13 @@ export default class AuthSettingsPage extends ExtensionPage {
               label={
                 selectedGroup
                   ? [<Icon name={selectedGroup.icon() || icons[selectedGroup.id()]} />, '\t', selectedGroup.namePlural()]
-                  : app.translator.trans('fof-oauth.admin.settings.providers.no_group_label')
+                  : app.translator.trans('lstechneighbor-tcp-oidc.admin.settings.providers.no_group_label')
               }
               buttonClassName="Button"
               disabled={!this.setting(`lstechneighbor-tcp-oidc.${name}`)()}
             >
                               <Button icon="fas fa-times" onclick={() => this.setting(`lstechneighbor-tcp-oidc.${name}.group`)('')} active={!groupId}>
-                {app.translator.trans('fof-oauth.admin.settings.providers.no_group_label')}
+                {app.translator.trans('lstechneighbor-tcp-oidc.admin.settings.providers.no_group_label')}
               </Button>
 
               {this.getAvailableGroups().map((group) => (
