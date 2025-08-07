@@ -137,8 +137,7 @@ class AuthController implements RequestHandlerInterface
             error_log("TCP OIDC: Attempting to get user info...");
             $user = $oauthProvider->getResourceOwner($token);
 
-                    error_log("TCP OIDC: User data received: " . print_r($user->toArray(), true));
-        error_log("TCP OIDC: User ID: " . $user->getId());
+                    error_log("TCP OIDC: User data received successfully");
         
         // Get user data array to access email and name
         $userData = $user->toArray();
@@ -147,56 +146,29 @@ class AuthController implements RequestHandlerInterface
         
         error_log("TCP OIDC: User email: " . ($email ?? 'null'));
         error_log("TCP OIDC: User name: " . ($name ?? 'null'));
-        error_log("🎯🎯🎯 ABOUT TO START FLARUM RESPONSE CREATION! 🎯🎯🎯");
-        error_log("🎯🎯🎯 USER DATA PROCESSING COMPLETED! 🎯🎯🎯");
-
-            // Use Flarum's OAuth response factory to handle the registration/login
-            error_log("🎯🎯🎯 ABOUT TO CREATE FLARUM RESPONSE! 🎯🎯🎯");
-            error_log("TCP OIDC: Creating Flarum response with provider: " . $provider->name() . ", user ID: " . $user->getId());
-            
-            // Set error handler to catch warnings
-            error_log("🔧🔧🔧 SETTING UP ERROR HANDLER! 🔧🔧🔧");
-            set_error_handler(function($severity, $message, $file, $line) {
-                error_log("🚨🚨🚨 ERROR HANDLER TRIGGERED! 🚨🚨🚨");
-                error_log("TCP OIDC: PHP Warning: $message in $file on line $line");
-                error_log("TCP OIDC: Warning severity: $severity");
-                error_log("TCP OIDC: Full warning context: severity=$severity, message='$message', file='$file', line=$line");
-                return true; // Don't execute the internal error handler
-            });
-            error_log("✅✅✅ ERROR HANDLER SET UP SUCCESSFULLY! ✅✅✅");
+        error_log("TCP OIDC: About to create Flarum response");
             
             try {
-                // Log the exact parameters being passed to response->make
+                // Get parameters for response->make
                 $providerName = $provider->name();
                 
                 // Get user ID from user data array (OpenID Connect uses 'sub' field)
                 $userData = $user->toArray();
                 $userId = $userData['sub'] ?? $userData['id'] ?? $user->getId();
                 
-                error_log("TCP OIDC: About to call response->make with provider: '$providerName', userId: '$userId'");
-                error_log("TCP OIDC: User data for ID extraction: " . print_r($userData, true));
-                error_log("TCP OIDC: Response factory class: " . get_class($this->response));
-                error_log("TCP OIDC: User object class: " . get_class($user));
-                error_log("TCP OIDC: Provider object class: " . get_class($provider));
-                error_log("TCP OIDC: About to call response->make - THIS IS THE CRITICAL MOMENT");
+                error_log("TCP OIDC: Calling response->make with provider: '$providerName', userId: '$userId'");
                 
                 $response = $this->response->make(
                     $providerName,
                     $userId,
                     function (Registration $registration) use ($user, $provider) {
-                        error_log("TCP OIDC: Inside registration callback");
                         $this->setSuggestions($registration, $user, $provider);
-                        error_log("TCP OIDC: Registration callback completed");
                     }
                 );
-                
-                // Restore error handler
-                restore_error_handler();
                 
                 error_log("TCP OIDC: Flarum response created successfully");
                 return $response;
             } catch (\Exception $e) {
-                restore_error_handler();
                 error_log("TCP OIDC: Exception in response creation: " . $e->getMessage());
                 throw $e;
             }
@@ -219,7 +191,6 @@ class AuthController implements RequestHandlerInterface
         
         // Get user data array to access email and name
         $userData = $user->toArray();
-        error_log("TCP OIDC: User data array: " . print_r($userData, true));
         
         // Get email from user data
         $email = $userData['email'] ?? $userData['email_address'] ?? $userData['mail'] ?? null;
@@ -238,7 +209,6 @@ class AuthController implements RequestHandlerInterface
         $avatar = $userData['picture'] ?? $userData['avatar'] ?? '';
 
         error_log("TCP OIDC: Using username: " . $username);
-        error_log("TCP OIDC: Using avatar: " . $avatar);
 
         try {
             $registration
@@ -254,9 +224,6 @@ class AuthController implements RequestHandlerInterface
             // Only provide avatar if it's a valid URL
             if (!empty($avatar) && filter_var($avatar, FILTER_VALIDATE_URL)) {
                 $registration->provideAvatar($avatar);
-                error_log("TCP OIDC: Avatar provided: " . $avatar);
-            } else {
-                error_log("TCP OIDC: No valid avatar URL provided, skipping avatar");
             }
                 
             error_log("TCP OIDC: Registration suggestions set successfully");
