@@ -142,6 +142,7 @@ class AuthController implements RequestHandlerInterface
         error_log("TCP OIDC: User email: " . ($user->getEmail() ?? 'null'));
         error_log("TCP OIDC: User name: " . ($user->getName() ?? 'null'));
         error_log("🎯🎯🎯 ABOUT TO START FLARUM RESPONSE CREATION! 🎯🎯🎯");
+        error_log("🎯🎯🎯 USER DATA PROCESSING COMPLETED! 🎯🎯🎯");
 
             // Use Flarum's OAuth response factory to handle the registration/login
             error_log("🎯🎯🎯 ABOUT TO CREATE FLARUM RESPONSE! 🎯🎯🎯");

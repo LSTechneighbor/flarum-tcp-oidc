@@ -215,7 +215,8 @@ sudo find /var/www/flarum -type f -exec chmod 644 {} \;
 #Restart PHP and Nginx
 sudo systemctl reload php8.4-fpm
 sudo systemctl restart nginx
-
+sudo truncate -s 0 /var/log/nginx/error.log
+sudo tail -50 /var/log/nginx/error.log
 
 
 
