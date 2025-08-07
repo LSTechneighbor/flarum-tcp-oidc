@@ -12,7 +12,10 @@
 namespace LSTechNeighbor\TCPOIDC\Controllers;
 
 use Flarum\Forum\Auth\Registration;
+use Flarum\Forum\Auth\ResponseFactory;
 use Flarum\Http\Exception\RouteNotFoundException;
+use Flarum\User\LoginProvider;
+use Flarum\User\User;
 use LSTechNeighbor\TCPOIDC\Controller;
 use LSTechNeighbor\TCPOIDC\Events\SettingSuggestions;
 use LSTechNeighbor\TCPOIDC\Provider;
@@ -22,8 +25,23 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class AuthController implements RequestHandlerInterface
+class AuthController extends Controller
 {
+    /**
+     * @var ResponseFactory
+     */
+    protected $response;
+
+    public function __construct(ResponseFactory $response)
+    {
+        $this->response = $response;
+    }
+
+    protected function getProviderName(): string
+    {
+        return 'tcp';
+    }
+
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         error_log("TCP OIDC: AuthController handle method called!");
@@ -108,21 +126,49 @@ class AuthController implements RequestHandlerInterface
         // Get user info
         $user = $oauthProvider->getResourceOwner($token);
 
-        // Create or update user
-        return $this->createOrUpdateUser($user, $provider, $request);
+        error_log("TCP OIDC: User data received: " . print_r($user->toArray(), true));
+
+        // Use Flarum's OAuth response factory to handle the registration/login
+        return $this->response->make(
+            $provider->name(),
+            $user->getId(),
+            function (Registration $registration) use ($user, $provider) {
+                $this->setSuggestions($registration, $user, $provider);
+            }
+        );
     }
 
-    protected function createOrUpdateUser($user, Provider $provider, ServerRequestInterface $request): ResponseInterface
+    protected function setSuggestions(Registration $registration, $user, Provider $provider)
     {
-        // This is a simplified version - you may need to implement user creation logic
-        // based on your specific requirements
+        error_log("TCP OIDC: Setting registration suggestions");
         
-        $registration = new Registration();
-        $provider->suggestions($registration, $user, '');
+        // Get email from user data
+        $email = $user->getEmail();
+        
+        if (empty($email)) {
+            // Try to get email from user array data
+            $userData = $user->toArray();
+            $email = $userData['email'] ?? null;
+        }
 
-        // For now, redirect to forum
-        header('Location: /');
-        exit;
+        if (empty($email)) {
+            error_log("TCP OIDC: No email found in user data");
+            throw new \Exception('No email address provided by TCP OIDC provider');
+        }
+
+        error_log("TCP OIDC: Using email: " . $email);
+
+        // Get username from user data
+        $username = $user->getName() ?? $user->getNickname() ?? '';
+        
+        // Get avatar if available
+        $avatar = $user->getAvatar() ?? '';
+
+        $registration
+            ->provideTrustedEmail($email)
+            ->suggestUsername($username)
+            ->provideAvatar($avatar)
+            ->setPayload($user->toArray());
     }
 
     protected function getRedirectUri(ServerRequestInterface $request, string $providerName): string
