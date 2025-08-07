@@ -135,10 +135,11 @@ class AuthController implements RequestHandlerInterface
             error_log("TCP OIDC: Attempting to get user info...");
             $user = $oauthProvider->getResourceOwner($token);
 
-            error_log("TCP OIDC: User data received: " . print_r($user->toArray(), true));
-            error_log("TCP OIDC: User ID: " . $user->getId());
-            error_log("TCP OIDC: User email: " . ($user->getEmail() ?? 'null'));
-            error_log("TCP OIDC: User name: " . ($user->getName() ?? 'null'));
+                    error_log("TCP OIDC: User data received: " . print_r($user->toArray(), true));
+        error_log("TCP OIDC: User ID: " . $user->getId());
+        error_log("TCP OIDC: User email: " . ($user->getEmail() ?? 'null'));
+        error_log("TCP OIDC: User name: " . ($user->getName() ?? 'null'));
+        error_log("🎯🎯🎯 ABOUT TO START FLARUM RESPONSE CREATION - VERSION 1.0.52 🎯🎯🎯");
 
             // Use Flarum's OAuth response factory to handle the registration/login
             error_log("🎯🎯🎯 ABOUT TO CREATE FLARUM RESPONSE - VERSION 1.0.51 🎯🎯🎯");
