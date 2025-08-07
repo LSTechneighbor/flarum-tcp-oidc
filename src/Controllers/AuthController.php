@@ -144,7 +144,14 @@ class AuthController implements RequestHandlerInterface
             
             // Log the complete user data array
             $userData = $user->toArray();
-            error_log("TCP OIDC: Complete user data: " . json_encode($userData, JSON_PRETTY_PRINT));
+            
+            // Write complete user data to a separate file for full visibility
+            $debugFile = '/tmp/tcp_oidc_user_data_' . date('Y-m-d_H-i-s') . '.json';
+            file_put_contents($debugFile, json_encode($userData, JSON_PRETTY_PRINT));
+            error_log("TCP OIDC: Complete user data written to: " . $debugFile);
+            
+            // Also log in error log but with compact format to avoid truncation
+            error_log("TCP OIDC: Complete user data (compact): " . json_encode($userData));
             
             // Log individual fields that might be relevant
             $fieldsToCheck = [
