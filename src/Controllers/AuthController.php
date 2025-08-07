@@ -103,34 +103,52 @@ class AuthController implements RequestHandlerInterface
 
     protected function handleCallback(ServerRequestInterface $request, Provider $provider): ResponseInterface
     {
-        $queryParams = $request->getQueryParams();
-        $code = $queryParams['code'] ?? null;
+        try {
+            $queryParams = $request->getQueryParams();
+            $code = $queryParams['code'] ?? null;
 
-        if (!$code) {
-            throw new \Exception('Authorization code not received');
-        }
-
-        $redirectUri = $this->getRedirectUri($request, $provider->name());
-        $oauthProvider = $provider->provider($redirectUri);
-
-        // Exchange code for token
-        $token = $oauthProvider->getAccessToken('authorization_code', [
-            'code' => $code
-        ]);
-
-        // Get user info
-        $user = $oauthProvider->getResourceOwner($token);
-
-        error_log("TCP OIDC: User data received: " . print_r($user->toArray(), true));
-
-        // Use Flarum's OAuth response factory to handle the registration/login
-        return $this->response->make(
-            $provider->name(),
-            $user->getId(),
-            function (Registration $registration) use ($user, $provider) {
-                $this->setSuggestions($registration, $user, $provider);
+            if (!$code) {
+                throw new \Exception('Authorization code not received');
             }
-        );
+
+            error_log("TCP OIDC: Received authorization code: " . $code);
+
+            $redirectUri = $this->getRedirectUri($request, $provider->name());
+            $oauthProvider = $provider->provider($redirectUri);
+
+            // Exchange code for token
+            $token = $oauthProvider->getAccessToken('authorization_code', [
+                'code' => $code
+            ]);
+
+            error_log("TCP OIDC: Token received successfully");
+
+            // Get user info
+            $user = $oauthProvider->getResourceOwner($token);
+
+            error_log("TCP OIDC: User data received: " . print_r($user->toArray(), true));
+            error_log("TCP OIDC: User ID: " . $user->getId());
+            error_log("TCP OIDC: User email: " . ($user->getEmail() ?? 'null'));
+            error_log("TCP OIDC: User name: " . ($user->getName() ?? 'null'));
+
+            // Use Flarum's OAuth response factory to handle the registration/login
+            return $this->response->make(
+                $provider->name(),
+                $user->getId(),
+                function (Registration $registration) use ($user, $provider) {
+                    $this->setSuggestions($registration, $user, $provider);
+                }
+            );
+        } catch (\Exception $e) {
+            error_log("TCP OIDC: Error in handleCallback: " . $e->getMessage());
+            error_log("TCP OIDC: Error trace: " . $e->getTraceAsString());
+            
+            // Redirect to forum with error
+            $forumUrl = (string) $request->getUri()->withPath('/');
+            $errorUrl = $forumUrl . '?oauth_error=callback&message=' . urlencode($e->getMessage());
+            header('Location: ' . $errorUrl);
+            exit;
+        }
     }
 
     protected function setSuggestions(Registration $registration, $user, Provider $provider)
@@ -143,7 +161,8 @@ class AuthController implements RequestHandlerInterface
         if (empty($email)) {
             // Try to get email from user array data
             $userData = $user->toArray();
-            $email = $userData['email'] ?? null;
+            error_log("TCP OIDC: User data array: " . print_r($userData, true));
+            $email = $userData['email'] ?? $userData['email_address'] ?? $userData['mail'] ?? null;
         }
 
         if (empty($email)) {
@@ -154,10 +173,13 @@ class AuthController implements RequestHandlerInterface
         error_log("TCP OIDC: Using email: " . $email);
 
         // Get username from user data
-        $username = $user->getName() ?? $user->getNickname() ?? '';
+        $username = $user->getName() ?? $user->getNickname() ?? $user->getUsername() ?? '';
         
         // Get avatar if available
         $avatar = $user->getAvatar() ?? '';
+
+        error_log("TCP OIDC: Using username: " . $username);
+        error_log("TCP OIDC: Using avatar: " . $avatar);
 
         $registration
             ->provideTrustedEmail($email)
