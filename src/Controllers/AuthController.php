@@ -168,8 +168,13 @@ class AuthController implements RequestHandlerInterface
             try {
                 // Log the exact parameters being passed to response->make
                 $providerName = $provider->name();
-                $userId = $user->getId();
+                
+                // Get user ID from user data array (OpenID Connect uses 'sub' field)
+                $userData = $user->toArray();
+                $userId = $userData['sub'] ?? $userData['id'] ?? $user->getId();
+                
                 error_log("TCP OIDC: About to call response->make with provider: '$providerName', userId: '$userId'");
+                error_log("TCP OIDC: User data for ID extraction: " . print_r($userData, true));
                 error_log("TCP OIDC: Response factory class: " . get_class($this->response));
                 error_log("TCP OIDC: User object class: " . get_class($user));
                 error_log("TCP OIDC: Provider object class: " . get_class($provider));
