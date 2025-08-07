@@ -149,11 +149,18 @@ class AuthController implements RequestHandlerInterface
             });
             
             try {
+                // Log the exact parameters being passed to response->make
+                $providerName = $provider->name();
+                $userId = $user->getId();
+                error_log("TCP OIDC: About to call response->make with provider: '$providerName', userId: '$userId'");
+                
                 $response = $this->response->make(
-                    $provider->name(),
-                    $user->getId(),
+                    $providerName,
+                    $userId,
                     function (Registration $registration) use ($user, $provider) {
+                        error_log("TCP OIDC: Inside registration callback");
                         $this->setSuggestions($registration, $user, $provider);
+                        error_log("TCP OIDC: Registration callback completed");
                     }
                 );
                 
@@ -164,6 +171,7 @@ class AuthController implements RequestHandlerInterface
                 return $response;
             } catch (\Exception $e) {
                 restore_error_handler();
+                error_log("TCP OIDC: Exception in response creation: " . $e->getMessage());
                 throw $e;
             }
         } catch (\Exception $e) {
