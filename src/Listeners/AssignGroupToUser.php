@@ -94,12 +94,22 @@ class AssignGroupToUser
         // Set nickname from the payload if available
         if ($registration && method_exists($registration, 'getPayload')) {
             $payload = $registration->getPayload();
-            if (is_array($payload) && isset($payload['nickname']) && !empty($payload['nickname'])) {
-                $user->nickname = $payload['nickname'];
-                error_log("TCP OIDC Debug - Nickname set to: " . $payload['nickname']);
+            if (is_array($payload)) {
+                // Try multiple fields for nickname (nickname, preferred_username, given_name, name)
+                $nickname = $payload['nickname'] ?? $payload['preferred_username'] ?? $payload['given_name'] ?? $payload['name'] ?? null;
+                
+                if (!empty($nickname)) {
+                    $user->nickname = $nickname;
+                    error_log("TCP OIDC Debug - Nickname set to: " . $nickname);
+                } else {
+                    error_log("TCP OIDC Debug - No suitable nickname field found in payload");
+                    error_log("TCP OIDC Debug - Available payload keys: " . json_encode(array_keys($payload)));
+                }
             } else {
-                error_log("TCP OIDC Debug - Nickname not found or empty in payload");
+                error_log("TCP OIDC Debug - Payload is not an array or is empty");
             }
+        } else {
+            error_log("TCP OIDC Debug - Registration object or getPayload method not available");
         }
     }
 }

@@ -145,13 +145,21 @@ class AuthController implements RequestHandlerInterface
             // Log the complete user data array
             $userData = $user->toArray();
             
-            // Write complete user data to a separate file for full visibility
-            $debugFile = '/tmp/tcp_oidc_user_data_' . date('Y-m-d_H-i-s') . '.json';
+            // Write complete user data to a more accessible location
+            $debugFile = '/var/log/tcp_oidc_debug.json';
             file_put_contents($debugFile, json_encode($userData, JSON_PRETTY_PRINT));
             error_log("TCP OIDC: Complete user data written to: " . $debugFile);
             
-            // Also log in error log but with compact format to avoid truncation
-            error_log("TCP OIDC: Complete user data (compact): " . json_encode($userData));
+            // Log each field individually to avoid truncation
+            error_log("TCP OIDC: === USER DATA FIELDS ===");
+            foreach ($userData as $key => $value) {
+                if (is_array($value) || is_object($value)) {
+                    error_log("TCP OIDC: {$key}: " . json_encode($value));
+                } else {
+                    error_log("TCP OIDC: {$key}: " . $value);
+                }
+            }
+            error_log("TCP OIDC: === END USER DATA FIELDS ===");
             
             // Log individual fields that might be relevant
             $fieldsToCheck = [
@@ -252,8 +260,8 @@ class AuthController implements RequestHandlerInterface
 
         error_log("TCP OIDC: Using email: " . $email);
 
-        // Get username from user data (prefer nickname, then given_name)
-        $username = $userData['nickname'] ?? $userData['given_name'] ?? $userData['name'] ?? $userData['username'] ?? '';
+        // Get username from user data (use TCP Name field for Flarum username)
+        $username = $userData['name'] ?? $userData['given_name'] ?? $userData['nickname'] ?? $userData['username'] ?? '';
         
         // Get organization name from email domain or user data
         $orgName = $userData['org'] ?? $userData['organization'] ?? $userData['org_name'] ?? null;
