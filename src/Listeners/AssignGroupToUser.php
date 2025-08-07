@@ -37,6 +37,7 @@ class AssignGroupToUser
     {
         $provider = $event->provider;
         $user = $event->user;
+        $registration = $event->registration;
 
         // Get the group ID for this provider
         $groupId = $this->settings->get("lstechneighbor-tcp-oidc.{$provider}.group");
@@ -47,6 +48,14 @@ class AssignGroupToUser
                 // Attach the group to the user
                 $user->groups()->attach($groupId);
             });
+        }
+
+        // Set nickname from the payload if available
+        if ($registration && method_exists($registration, 'getPayload')) {
+            $payload = $registration->getPayload();
+            if (is_array($payload) && isset($payload['nickname']) && !empty($payload['nickname'])) {
+                $user->nickname = $payload['nickname'];
+            }
         }
     }
 }
