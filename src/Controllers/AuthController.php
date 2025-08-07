@@ -244,8 +244,15 @@ class AuthController implements RequestHandlerInterface
             $registration
                 ->provideTrustedEmail($email)
                 ->suggestUsername($username)
-                ->provideAvatar($avatar)
                 ->setPayload($user->toArray());
+            
+            // Only provide avatar if it's a valid URL
+            if (!empty($avatar) && filter_var($avatar, FILTER_VALIDATE_URL)) {
+                $registration->provideAvatar($avatar);
+                error_log("TCP OIDC: Avatar provided: " . $avatar);
+            } else {
+                error_log("TCP OIDC: No valid avatar URL provided, skipping avatar");
+            }
                 
             error_log("TCP OIDC: Registration suggestions set successfully");
         } catch (\Exception $e) {
