@@ -143,12 +143,15 @@ class AuthController implements RequestHandlerInterface
             error_log("TCP OIDC: Creating Flarum response with provider: " . $provider->name() . ", user ID: " . $user->getId());
             
             // Set error handler to catch warnings
+            error_log("TCP OIDC: Setting up error handler...");
             set_error_handler(function($severity, $message, $file, $line) {
+                error_log("TCP OIDC: ERROR HANDLER CALLED!");
                 error_log("TCP OIDC: PHP Warning: $message in $file on line $line");
                 error_log("TCP OIDC: Warning severity: $severity");
                 error_log("TCP OIDC: Full warning context: severity=$severity, message='$message', file='$file', line=$line");
                 return true; // Don't execute the internal error handler
             });
+            error_log("TCP OIDC: Error handler set up successfully");
             
             try {
                 // Log the exact parameters being passed to response->make
@@ -158,6 +161,7 @@ class AuthController implements RequestHandlerInterface
                 error_log("TCP OIDC: Response factory class: " . get_class($this->response));
                 error_log("TCP OIDC: User object class: " . get_class($user));
                 error_log("TCP OIDC: Provider object class: " . get_class($provider));
+                error_log("TCP OIDC: About to call response->make - THIS IS THE CRITICAL MOMENT");
                 
                 $response = $this->response->make(
                     $providerName,
