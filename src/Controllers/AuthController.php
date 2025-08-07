@@ -141,13 +141,31 @@ class AuthController implements RequestHandlerInterface
 
             // Use Flarum's OAuth response factory to handle the registration/login
             error_log("TCP OIDC: Creating Flarum response with provider: " . $provider->name() . ", user ID: " . $user->getId());
-            return $this->response->make(
-                $provider->name(),
-                $user->getId(),
-                function (Registration $registration) use ($user, $provider) {
-                    $this->setSuggestions($registration, $user, $provider);
-                }
-            );
+            
+            // Set error handler to catch warnings
+            set_error_handler(function($severity, $message, $file, $line) {
+                error_log("TCP OIDC: PHP Warning: $message in $file on line $line");
+                return true; // Don't execute the internal error handler
+            });
+            
+            try {
+                $response = $this->response->make(
+                    $provider->name(),
+                    $user->getId(),
+                    function (Registration $registration) use ($user, $provider) {
+                        $this->setSuggestions($registration, $user, $provider);
+                    }
+                );
+                
+                // Restore error handler
+                restore_error_handler();
+                
+                error_log("TCP OIDC: Flarum response created successfully");
+                return $response;
+            } catch (\Exception $e) {
+                restore_error_handler();
+                throw $e;
+            }
         } catch (\Exception $e) {
             error_log("TCP OIDC: Error in handleCallback: " . $e->getMessage());
             error_log("TCP OIDC: Error class: " . get_class($e));
