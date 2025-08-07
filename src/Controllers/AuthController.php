@@ -201,6 +201,7 @@ class AuthController implements RequestHandlerInterface
     protected function getRedirectUri(ServerRequestInterface $request, string $providerName): string
     {
         $uri = $request->getUri();
-        return (string) $uri->withPath("/auth/{$providerName}");
+        // Return the clean base URI without query parameters
+        return (string) $uri->withPath("/auth/{$providerName}")->withQuery('');
     }
 } 
