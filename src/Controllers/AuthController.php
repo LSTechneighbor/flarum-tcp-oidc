@@ -38,7 +38,7 @@ class AuthController implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        error_log("🚀🚀🚀 TCP OIDC VERSION 1.0.54 IS RUNNING! 🚀🚀🚀");
+        error_log("🚀🚀🚀 TCP OIDC CODE IS RUNNING! 🚀🚀🚀");
         error_log("TCP OIDC: AuthController handle method called!");
         error_log("TCP OIDC: Starting OAuth flow...");
         
@@ -105,7 +105,7 @@ class AuthController implements RequestHandlerInterface
 
     protected function handleCallback(ServerRequestInterface $request, Provider $provider): ResponseInterface
     {
-        error_log("🚀🚀🚀 ENTERING handleCallback - VERSION 1.0.54 🚀🚀🚀");
+        error_log("🚀🚀🚀 ENTERING handleCallback! 🚀🚀🚀");
         try {
             $queryParams = $request->getQueryParams();
             $code = $queryParams['code'] ?? null;
@@ -141,22 +141,22 @@ class AuthController implements RequestHandlerInterface
         error_log("TCP OIDC: User ID: " . $user->getId());
         error_log("TCP OIDC: User email: " . ($user->getEmail() ?? 'null'));
         error_log("TCP OIDC: User name: " . ($user->getName() ?? 'null'));
-        error_log("🎯🎯🎯 ABOUT TO START FLARUM RESPONSE CREATION - VERSION 1.0.54 🎯🎯🎯");
+        error_log("🎯🎯🎯 ABOUT TO START FLARUM RESPONSE CREATION! 🎯🎯🎯");
 
             // Use Flarum's OAuth response factory to handle the registration/login
-            error_log("🎯🎯🎯 ABOUT TO CREATE FLARUM RESPONSE - VERSION 1.0.54 🎯🎯🎯");
+            error_log("🎯🎯🎯 ABOUT TO CREATE FLARUM RESPONSE! 🎯🎯🎯");
             error_log("TCP OIDC: Creating Flarum response with provider: " . $provider->name() . ", user ID: " . $user->getId());
             
             // Set error handler to catch warnings
-            error_log("🔧🔧🔧 SETTING UP ERROR HANDLER - VERSION 1.0.54 🔧🔧🔧");
+            error_log("🔧🔧🔧 SETTING UP ERROR HANDLER! 🔧🔧🔧");
             set_error_handler(function($severity, $message, $file, $line) {
-                error_log("🚨🚨🚨 ERROR HANDLER TRIGGERED - VERSION 1.0.54 🚨🚨🚨");
+                error_log("🚨🚨🚨 ERROR HANDLER TRIGGERED! 🚨🚨🚨");
                 error_log("TCP OIDC: PHP Warning: $message in $file on line $line");
                 error_log("TCP OIDC: Warning severity: $severity");
                 error_log("TCP OIDC: Full warning context: severity=$severity, message='$message', file='$file', line=$line");
                 return true; // Don't execute the internal error handler
             });
-            error_log("✅✅✅ ERROR HANDLER SET UP SUCCESSFULLY - VERSION 1.0.54 ✅✅✅");
+            error_log("✅✅✅ ERROR HANDLER SET UP SUCCESSFULLY! ✅✅✅");
             
             try {
                 // Log the exact parameters being passed to response->make
