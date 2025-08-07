@@ -145,6 +145,8 @@ class AuthController implements RequestHandlerInterface
             // Set error handler to catch warnings
             set_error_handler(function($severity, $message, $file, $line) {
                 error_log("TCP OIDC: PHP Warning: $message in $file on line $line");
+                error_log("TCP OIDC: Warning severity: $severity");
+                error_log("TCP OIDC: Full warning context: severity=$severity, message='$message', file='$file', line=$line");
                 return true; // Don't execute the internal error handler
             });
             
@@ -153,6 +155,9 @@ class AuthController implements RequestHandlerInterface
                 $providerName = $provider->name();
                 $userId = $user->getId();
                 error_log("TCP OIDC: About to call response->make with provider: '$providerName', userId: '$userId'");
+                error_log("TCP OIDC: Response factory class: " . get_class($this->response));
+                error_log("TCP OIDC: User object class: " . get_class($user));
+                error_log("TCP OIDC: Provider object class: " . get_class($provider));
                 
                 $response = $this->response->make(
                     $providerName,
