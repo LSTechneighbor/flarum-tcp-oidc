@@ -38,6 +38,7 @@ class AuthController implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
+        error_log("🚀🚀🚀 TCP OIDC VERSION 1.0.51 IS RUNNING! 🚀🚀🚀");
         error_log("TCP OIDC: AuthController handle method called!");
         
         $queryParams = $request->getQueryParams();
@@ -140,18 +141,19 @@ class AuthController implements RequestHandlerInterface
             error_log("TCP OIDC: User name: " . ($user->getName() ?? 'null'));
 
             // Use Flarum's OAuth response factory to handle the registration/login
+            error_log("🎯🎯🎯 ABOUT TO CREATE FLARUM RESPONSE - VERSION 1.0.51 🎯🎯🎯");
             error_log("TCP OIDC: Creating Flarum response with provider: " . $provider->name() . ", user ID: " . $user->getId());
             
             // Set error handler to catch warnings
-            error_log("TCP OIDC: Setting up error handler...");
+            error_log("🔧🔧🔧 SETTING UP ERROR HANDLER - VERSION 1.0.51 🔧🔧🔧");
             set_error_handler(function($severity, $message, $file, $line) {
-                error_log("TCP OIDC: ERROR HANDLER CALLED!");
+                error_log("🚨🚨🚨 ERROR HANDLER TRIGGERED - VERSION 1.0.51 🚨🚨🚨");
                 error_log("TCP OIDC: PHP Warning: $message in $file on line $line");
                 error_log("TCP OIDC: Warning severity: $severity");
                 error_log("TCP OIDC: Full warning context: severity=$severity, message='$message', file='$file', line=$line");
                 return true; // Don't execute the internal error handler
             });
-            error_log("TCP OIDC: Error handler set up successfully");
+            error_log("✅✅✅ ERROR HANDLER SET UP SUCCESSFULLY - VERSION 1.0.51 ✅✅✅");
             
             try {
                 // Log the exact parameters being passed to response->make
