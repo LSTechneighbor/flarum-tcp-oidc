@@ -216,10 +216,8 @@ class AuthController implements RequestHandlerInterface
                 ->suggestUsername($username)
                 ->setPayload($user->toArray());
             
-            // Set nickname as screennamd@org format
-            $nickname = $username . '@costumeparade.io';
-            $registration->suggestNickname($nickname);
-            error_log("TCP OIDC: Setting nickname: " . $nickname);
+            // Note: Flarum doesn't support setting nicknames during registration
+            // The nickname will need to be set manually or through a separate process
             
             // Only provide avatar if it's a valid URL
             if (!empty($avatar) && filter_var($avatar, FILTER_VALIDATE_URL)) {
