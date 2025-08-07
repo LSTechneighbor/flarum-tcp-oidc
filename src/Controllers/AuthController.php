@@ -140,7 +140,7 @@ class AuthController implements RequestHandlerInterface
             error_log("TCP OIDC: User name: " . ($user->getName() ?? 'null'));
 
             // Use Flarum's OAuth response factory to handle the registration/login
-            error_log("TCP OIDC: Creating Flarum response...");
+            error_log("TCP OIDC: Creating Flarum response with provider: " . $provider->name() . ", user ID: " . $user->getId());
             return $this->response->make(
                 $provider->name(),
                 $user->getId(),
@@ -191,11 +191,18 @@ class AuthController implements RequestHandlerInterface
         error_log("TCP OIDC: Using username: " . $username);
         error_log("TCP OIDC: Using avatar: " . $avatar);
 
-        $registration
-            ->provideTrustedEmail($email)
-            ->suggestUsername($username)
-            ->provideAvatar($avatar)
-            ->setPayload($user->toArray());
+        try {
+            $registration
+                ->provideTrustedEmail($email)
+                ->suggestUsername($username)
+                ->provideAvatar($avatar)
+                ->setPayload($user->toArray());
+                
+            error_log("TCP OIDC: Registration suggestions set successfully");
+        } catch (\Exception $e) {
+            error_log("TCP OIDC: Error setting registration suggestions: " . $e->getMessage());
+            throw $e;
+        }
     }
 
     protected function getRedirectUri(ServerRequestInterface $request, string $providerName): string
