@@ -16,7 +16,6 @@ use Flarum\Forum\Auth\ResponseFactory;
 use Flarum\Http\Exception\RouteNotFoundException;
 use Flarum\User\LoginProvider;
 use Flarum\User\User;
-use LSTechNeighbor\TCPOIDC\Controller;
 use LSTechNeighbor\TCPOIDC\Events\SettingSuggestions;
 use LSTechNeighbor\TCPOIDC\Provider;
 use Illuminate\Support\Arr;
@@ -25,7 +24,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class AuthController extends Controller
+class AuthController implements RequestHandlerInterface
 {
     /**
      * @var ResponseFactory
@@ -35,11 +34,6 @@ class AuthController extends Controller
     public function __construct(ResponseFactory $response)
     {
         $this->response = $response;
-    }
-
-    protected function getProviderName(): string
-    {
-        return 'tcp';
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
@@ -98,6 +92,7 @@ class AuthController extends Controller
             header('Location: ' . $authUrl);
             exit;
         } catch (\Exception $e) {
+            error_log("TCP OIDC: Error in startAuthFlow: " . $e->getMessage());
             // If there's an error (like missing configuration), redirect to forum with error
             $forumUrl = (string) $request->getUri()->withPath('/');
             $errorUrl = $forumUrl . '?oauth_error=configuration';
