@@ -205,16 +205,33 @@ class AuthController implements RequestHandlerInterface
         // Get username from user data (prefer nickname, then given_name)
         $username = $userData['nickname'] ?? $userData['given_name'] ?? $userData['name'] ?? $userData['username'] ?? '';
         
+        // Get organization name from email domain or user data
+        $orgName = $userData['org'] ?? $userData['organization'] ?? $userData['org_name'] ?? null;
+        if (empty($orgName) && !empty($email)) {
+            // Extract org from email domain (e.g., ljsquitieri@gmail.com -> gmail.com)
+            $emailParts = explode('@', $email);
+            if (count($emailParts) > 1) {
+                $orgName = $emailParts[1];
+            }
+        }
+        
         // Get avatar if available
         $avatar = $userData['picture'] ?? $userData['avatar'] ?? '';
 
         error_log("TCP OIDC: Using username: " . $username);
+        error_log("TCP OIDC: Using org name: " . ($orgName ?? 'null'));
 
         try {
+            // Add org name to the payload
+            $payload = $user->toArray();
+            if (!empty($orgName)) {
+                $payload['org_name'] = $orgName;
+            }
+            
             $registration
                 ->provideTrustedEmail($email)
                 ->suggestUsername($username)
-                ->setPayload($user->toArray());
+                ->setPayload($payload);
             
             // Note: Flarum doesn't support setting nicknames during registration
             // The nickname will need to be set manually or through a separate process
