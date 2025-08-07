@@ -231,8 +231,8 @@ class AuthController implements RequestHandlerInterface
 
         error_log("TCP OIDC: Using email: " . $email);
 
-        // Get username from user data
-        $username = $userData['name'] ?? $userData['given_name'] ?? $userData['nickname'] ?? $userData['username'] ?? '';
+        // Get username from user data (prefer nickname, then given_name)
+        $username = $userData['nickname'] ?? $userData['given_name'] ?? $userData['name'] ?? $userData['username'] ?? '';
         
         // Get avatar if available
         $avatar = $userData['picture'] ?? $userData['avatar'] ?? '';
@@ -245,6 +245,11 @@ class AuthController implements RequestHandlerInterface
                 ->provideTrustedEmail($email)
                 ->suggestUsername($username)
                 ->setPayload($user->toArray());
+            
+            // Set nickname as screennamd@org format
+            $nickname = $username . '@costumeparade.io';
+            $registration->suggestNickname($nickname);
+            error_log("TCP OIDC: Setting nickname: " . $nickname);
             
             // Only provide avatar if it's a valid URL
             if (!empty($avatar) && filter_var($avatar, FILTER_VALIDATE_URL)) {
