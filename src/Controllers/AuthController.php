@@ -137,16 +137,59 @@ class AuthController implements RequestHandlerInterface
             error_log("TCP OIDC: Attempting to get user info...");
             $user = $oauthProvider->getResourceOwner($token);
 
-                    error_log("TCP OIDC: User data received successfully");
+            error_log("TCP OIDC: User data received successfully");
         
-        // Get user data array to access email and name
-        $userData = $user->toArray();
-        $email = $userData['email'] ?? $userData['email_address'] ?? $userData['mail'] ?? null;
-        $name = $userData['name'] ?? $userData['given_name'] ?? $userData['nickname'] ?? null;
+            // ===== COMPREHENSIVE USER DATA DEBUG LOGGING =====
+            error_log("TCP OIDC: ===== RAW USER DATA FROM OIDC PROVIDER =====");
+            
+            // Log the complete user data array
+            $userData = $user->toArray();
+            error_log("TCP OIDC: Complete user data: " . json_encode($userData, JSON_PRETTY_PRINT));
+            
+            // Log individual fields that might be relevant
+            $fieldsToCheck = [
+                'sub', 'id', 'email', 'email_address', 'mail', 'name', 'given_name', 
+                'family_name', 'nickname', 'preferred_username', 'username', 'picture', 
+                'avatar', 'org', 'organization', 'org_name', 'groups', 'roles', 
+                'profile', 'website', 'locale', 'zoneinfo', 'updated_at'
+            ];
+            
+            foreach ($fieldsToCheck as $field) {
+                if (isset($userData[$field])) {
+                    error_log("TCP OIDC: Field '{$field}': " . json_encode($userData[$field]));
+                }
+            }
+            
+            // Log user object methods if available
+            if (method_exists($user, 'getId')) {
+                error_log("TCP OIDC: User ID (getId): " . $user->getId());
+            }
+            if (method_exists($user, 'getEmail')) {
+                error_log("TCP OIDC: User Email (getEmail): " . $user->getEmail());
+            }
+            if (method_exists($user, 'getName')) {
+                error_log("TCP OIDC: User Name (getName): " . $user->getName());
+            }
+            if (method_exists($user, 'getNickname')) {
+                error_log("TCP OIDC: User Nickname (getNickname): " . $user->getNickname());
+            }
+            
+            // Log token information
+            error_log("TCP OIDC: Token class: " . get_class($token));
+            if (method_exists($token, 'getValues')) {
+                error_log("TCP OIDC: Token values: " . json_encode($token->getValues()));
+            }
+            
+            error_log("TCP OIDC: ===== END RAW USER DATA DEBUG =====");
+            // ===== END COMPREHENSIVE DEBUG LOGGING =====
         
-        error_log("TCP OIDC: User email: " . ($email ?? 'null'));
-        error_log("TCP OIDC: User name: " . ($name ?? 'null'));
-        error_log("TCP OIDC: About to create Flarum response");
+            // Get user data array to access email and name
+            $email = $userData['email'] ?? $userData['email_address'] ?? $userData['mail'] ?? null;
+            $name = $userData['name'] ?? $userData['given_name'] ?? $userData['nickname'] ?? null;
+            
+            error_log("TCP OIDC: Extracted email: " . ($email ?? 'null'));
+            error_log("TCP OIDC: Extracted name: " . ($name ?? 'null'));
+            error_log("TCP OIDC: About to create Flarum response");
             
             try {
                 // Get parameters for response->make
@@ -254,4 +297,4 @@ class AuthController implements RequestHandlerInterface
         // Return the clean base URI without query parameters
         return (string) $uri->withPath("/auth/{$providerName}")->withQuery('');
     }
-} 
+}
