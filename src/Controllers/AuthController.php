@@ -139,8 +139,14 @@ class AuthController implements RequestHandlerInterface
 
                     error_log("TCP OIDC: User data received: " . print_r($user->toArray(), true));
         error_log("TCP OIDC: User ID: " . $user->getId());
-        error_log("TCP OIDC: User email: " . ($user->getEmail() ?? 'null'));
-        error_log("TCP OIDC: User name: " . ($user->getName() ?? 'null'));
+        
+        // Get user data array to access email and name
+        $userData = $user->toArray();
+        $email = $userData['email'] ?? $userData['email_address'] ?? $userData['mail'] ?? null;
+        $name = $userData['name'] ?? $userData['given_name'] ?? $userData['nickname'] ?? null;
+        
+        error_log("TCP OIDC: User email: " . ($email ?? 'null'));
+        error_log("TCP OIDC: User name: " . ($name ?? 'null'));
         error_log("🎯🎯🎯 ABOUT TO START FLARUM RESPONSE CREATION! 🎯🎯🎯");
         error_log("🎯🎯🎯 USER DATA PROCESSING COMPLETED! 🎯🎯🎯");
 
@@ -206,15 +212,12 @@ class AuthController implements RequestHandlerInterface
     {
         error_log("TCP OIDC: Setting registration suggestions");
         
-        // Get email from user data
-        $email = $user->getEmail();
+        // Get user data array to access email and name
+        $userData = $user->toArray();
+        error_log("TCP OIDC: User data array: " . print_r($userData, true));
         
-        if (empty($email)) {
-            // Try to get email from user array data
-            $userData = $user->toArray();
-            error_log("TCP OIDC: User data array: " . print_r($userData, true));
-            $email = $userData['email'] ?? $userData['email_address'] ?? $userData['mail'] ?? null;
-        }
+        // Get email from user data
+        $email = $userData['email'] ?? $userData['email_address'] ?? $userData['mail'] ?? null;
 
         if (empty($email)) {
             error_log("TCP OIDC: No email found in user data");
@@ -224,10 +227,10 @@ class AuthController implements RequestHandlerInterface
         error_log("TCP OIDC: Using email: " . $email);
 
         // Get username from user data
-        $username = $user->getName() ?? $user->getNickname() ?? $user->getUsername() ?? '';
+        $username = $userData['name'] ?? $userData['given_name'] ?? $userData['nickname'] ?? $userData['username'] ?? '';
         
         // Get avatar if available
-        $avatar = $user->getAvatar() ?? '';
+        $avatar = $userData['picture'] ?? $userData['avatar'] ?? '';
 
         error_log("TCP OIDC: Using username: " . $username);
         error_log("TCP OIDC: Using avatar: " . $avatar);
