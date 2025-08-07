@@ -106,24 +106,32 @@ class AuthController implements RequestHandlerInterface
         try {
             $queryParams = $request->getQueryParams();
             $code = $queryParams['code'] ?? null;
+            $state = $queryParams['state'] ?? null;
 
             if (!$code) {
                 throw new \Exception('Authorization code not received');
             }
 
             error_log("TCP OIDC: Received authorization code: " . $code);
+            error_log("TCP OIDC: State parameter: " . $state);
 
             $redirectUri = $this->getRedirectUri($request, $provider->name());
+            error_log("TCP OIDC: Redirect URI: " . $redirectUri);
+            
             $oauthProvider = $provider->provider($redirectUri);
+            error_log("TCP OIDC: OAuth provider created successfully");
 
             // Exchange code for token
+            error_log("TCP OIDC: Attempting to exchange code for token...");
             $token = $oauthProvider->getAccessToken('authorization_code', [
                 'code' => $code
             ]);
 
             error_log("TCP OIDC: Token received successfully");
+            error_log("TCP OIDC: Token type: " . get_class($token));
 
             // Get user info
+            error_log("TCP OIDC: Attempting to get user info...");
             $user = $oauthProvider->getResourceOwner($token);
 
             error_log("TCP OIDC: User data received: " . print_r($user->toArray(), true));
@@ -132,6 +140,7 @@ class AuthController implements RequestHandlerInterface
             error_log("TCP OIDC: User name: " . ($user->getName() ?? 'null'));
 
             // Use Flarum's OAuth response factory to handle the registration/login
+            error_log("TCP OIDC: Creating Flarum response...");
             return $this->response->make(
                 $provider->name(),
                 $user->getId(),
@@ -141,6 +150,7 @@ class AuthController implements RequestHandlerInterface
             );
         } catch (\Exception $e) {
             error_log("TCP OIDC: Error in handleCallback: " . $e->getMessage());
+            error_log("TCP OIDC: Error class: " . get_class($e));
             error_log("TCP OIDC: Error trace: " . $e->getTraceAsString());
             
             // Redirect to forum with error

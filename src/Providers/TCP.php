@@ -59,12 +59,16 @@ class TCP extends Provider
         $clientId = $this->getSetting('client_id');
         $clientSecret = $this->getSetting('client_secret');
         
+        error_log("TCP OIDC Provider: TCP URL: " . $tcpUrl);
+        error_log("TCP OIDC Provider: Client ID: " . $clientId);
+        error_log("TCP OIDC Provider: Redirect URI: " . $redirectUri);
+        
         // Check if required settings are configured
         if (empty($tcpUrl) || empty($clientId) || empty($clientSecret)) {
             throw new \Exception('TCP OIDC is not properly configured. Please configure the TCP server URL, Client ID, and Client Secret in the admin settings.');
         }
         
-        return new GenericProvider([
+        $config = [
             'clientId'                => $clientId,
             'clientSecret'            => $clientSecret,
             'redirectUri'             => $redirectUri,
@@ -72,7 +76,11 @@ class TCP extends Provider
             'urlAccessToken'          => $tcpUrl . '/api/oidc/token',
             'urlResourceOwnerDetails' => $tcpUrl . '/api/oidc/userinfo',
             'scopes'                  => 'openid profile email',
-        ]);
+        ];
+        
+        error_log("TCP OIDC Provider: OAuth config: " . print_r($config, true));
+        
+        return new GenericProvider($config);
     }
 
     public function suggestions(Registration $registration, $user, string $token)
