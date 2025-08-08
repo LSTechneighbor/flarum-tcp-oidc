@@ -56,15 +56,32 @@ class AssignGroupToUser
         // Set display name from the payload if available
         if ($registration && method_exists($registration, 'getPayload')) {
             $payload = $registration->getPayload();
+            error_log("TCP OIDC: Payload type: " . gettype($payload));
             if (is_array($payload)) {
+                error_log("TCP OIDC: Available payload fields: " . implode(', ', array_keys($payload)));
                 // Try multiple fields for display name (nickname, preferred_username, given_name, name)
                 $displayName = $payload['nickname'] ?? $payload['preferred_username'] ?? $payload['given_name'] ?? $payload['name'] ?? null;
                 
                 if (!empty($displayName)) {
                     $user->display_name = $displayName;
                     error_log("TCP OIDC: Display name set to: " . $displayName);
+                    
+                    // Save the user to ensure the display_name is persisted
+                    $user->afterSave(function (User $user) use ($displayName) {
+                        if (empty($user->display_name)) {
+                            $user->display_name = $displayName;
+                            $user->save();
+                            error_log("TCP OIDC: Display name saved in afterSave: " . $displayName);
+                        }
+                    });
+                } else {
+                    error_log("TCP OIDC: No suitable display name found in payload");
                 }
+            } else {
+                error_log("TCP OIDC: Payload is not an array");
             }
+        } else {
+            error_log("TCP OIDC: No registration object or getPayload method not available");
         }
     }
 }
