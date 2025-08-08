@@ -52,6 +52,11 @@ class AssignGroupToUser
             return;
         }
 
+        // Log new user creation via TCP OIDC
+        if ($event->provider === 'tcp') {
+            error_log("TCP OIDC: New user created - Email: {$user->email}, Username: {$user->username}");
+        }
+
         $this->assignUserToGroup($user, $event->provider);
         $this->setUserNickname($user, $payload);
     }

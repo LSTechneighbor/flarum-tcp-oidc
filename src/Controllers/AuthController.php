@@ -38,21 +38,12 @@ class AuthController implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        error_log("🚀🚀🚀 TCP OIDC CODE IS RUNNING! 🚀🚀🚀");
-        error_log("TCP OIDC: AuthController handle method called!");
-        error_log("TCP OIDC: Starting OAuth flow...");
-        
         $queryParams = $request->getQueryParams();
         $session = $request->getAttribute('session');
         $routeParams = $request->getAttribute('routeParameters', []);
 
         $providerName = 'tcp'; // Hardcoded for TCP route
         
-        // Debug logging
-        error_log("TCP OIDC: AuthController called with provider: " . $providerName);
-        error_log("TCP OIDC: Request URI: " . $request->getUri());
-        error_log("TCP OIDC: Route params: " . print_r($routeParams, true));
-
         // Get the provider instance
         $container = app();
         $providers = $container->tagged('lstechneighbor-tcp-oidc.providers');
@@ -66,11 +57,8 @@ class AuthController implements RequestHandlerInterface
         }
 
         if (!$provider) {
-            error_log("TCP OIDC: Provider not found for: " . $providerName);
             throw new RouteNotFoundException();
         }
-        
-        error_log("TCP OIDC: Provider found: " . $provider->name());
 
         // Check if this is a callback
         if (isset($queryParams['code'])) {
@@ -94,7 +82,7 @@ class AuthController implements RequestHandlerInterface
             header('Location: ' . $authUrl);
             exit;
         } catch (\Exception $e) {
-            error_log("TCP OIDC: Error in startAuthFlow: " . $e->getMessage());
+            error_log("TCP OIDC: Configuration error - " . $e->getMessage());
             // If there's an error (like missing configuration), redirect to forum with error
             $forumUrl = (string) $request->getUri()->withPath('/');
             $errorUrl = $forumUrl . '?oauth_error=configuration';
@@ -105,7 +93,6 @@ class AuthController implements RequestHandlerInterface
 
     protected function handleCallback(ServerRequestInterface $request, Provider $provider): ResponseInterface
     {
-        error_log("🚀🚀🚀 ENTERING handleCallback! 🚀🚀🚀");
         try {
             $queryParams = $request->getQueryParams();
             $code = $queryParams['code'] ?? null;
@@ -115,55 +102,31 @@ class AuthController implements RequestHandlerInterface
                 throw new \Exception('Authorization code not received');
             }
 
-            error_log("TCP OIDC: Received authorization code: " . $code);
-            error_log("TCP OIDC: State parameter: " . $state);
-
             $redirectUri = $this->getRedirectUri($request, $provider->name());
-            error_log("TCP OIDC: Redirect URI: " . $redirectUri);
-            
             $oauthProvider = $provider->provider($redirectUri);
-            error_log("TCP OIDC: OAuth provider created successfully");
 
             // Exchange code for token
-            error_log("TCP OIDC: Attempting to exchange code for token...");
             $token = $oauthProvider->getAccessToken('authorization_code', [
                 'code' => $code
             ]);
 
-            error_log("TCP OIDC: Token received successfully");
-            error_log("TCP OIDC: Token type: " . get_class($token));
-
             // Get user info
-            error_log("TCP OIDC: Attempting to get user info...");
             $user = $oauthProvider->getResourceOwner($token);
-
-            error_log("TCP OIDC: User data received successfully");
-        
-            // Get user data array for processing
-        $userData = $user->toArray();
-        
-        // Optional: Write user data to file for debugging (comment out in production)
-        // $debugFile = '/tmp/tcp_oidc_user_data_' . date('Y-m-d_H-i-s') . '.json';
-        // file_put_contents($debugFile, json_encode($userData, JSON_PRETTY_PRINT));
-        // error_log("TCP OIDC: User data written to: " . $debugFile);
-        
+            $userData = $user->toArray();
+            
             // Get user data array to access email and name
             $email = $userData['email'] ?? $userData['email_address'] ?? $userData['mail'] ?? null;
             $name = $userData['name'] ?? $userData['given_name'] ?? $userData['nickname'] ?? null;
             
-            error_log("TCP OIDC: Extracted email: " . ($email ?? 'null'));
-            error_log("TCP OIDC: Extracted name: " . ($name ?? 'null'));
-            error_log("TCP OIDC: About to create Flarum response");
+            // Log successful user authentication
+            error_log("TCP OIDC: User authenticated successfully - Email: " . ($email ?? 'null') . ", Name: " . ($name ?? 'null'));
             
             try {
                 // Get parameters for response->make
                 $providerName = $provider->name();
                 
                 // Get user ID from user data array (OpenID Connect uses 'sub' field)
-                $userData = $user->toArray();
                 $userId = $userData['sub'] ?? $userData['id'] ?? $user->getId();
-                
-                error_log("TCP OIDC: Calling response->make with provider: '$providerName', userId: '$userId'");
                 
                 $response = $this->response->make(
                     $providerName,
@@ -173,16 +136,15 @@ class AuthController implements RequestHandlerInterface
                     }
                 );
                 
-                error_log("TCP OIDC: Flarum response created successfully");
+                // Log successful user creation/login
+                error_log("TCP OIDC: User registration/login completed successfully for: " . ($email ?? 'unknown'));
                 return $response;
             } catch (\Exception $e) {
-                error_log("TCP OIDC: Exception in response creation: " . $e->getMessage());
+                error_log("TCP OIDC: User registration failed - " . $e->getMessage());
                 throw $e;
             }
         } catch (\Exception $e) {
-            error_log("TCP OIDC: Error in handleCallback: " . $e->getMessage());
-            error_log("TCP OIDC: Error class: " . get_class($e));
-            error_log("TCP OIDC: Error trace: " . $e->getTraceAsString());
+            error_log("TCP OIDC: Authentication failed - " . $e->getMessage());
             
             // Redirect to forum with error
             $forumUrl = (string) $request->getUri()->withPath('/');
@@ -194,8 +156,6 @@ class AuthController implements RequestHandlerInterface
 
     protected function setSuggestions(Registration $registration, $user, Provider $provider)
     {
-        error_log("TCP OIDC: Setting registration suggestions");
-        
         // Get user data array to access email and name
         $userData = $user->toArray();
         
@@ -203,11 +163,8 @@ class AuthController implements RequestHandlerInterface
         $email = $userData['email'] ?? $userData['email_address'] ?? $userData['mail'] ?? null;
 
         if (empty($email)) {
-            error_log("TCP OIDC: No email found in user data");
             throw new \Exception('No email address provided by TCP OIDC provider');
         }
-
-        error_log("TCP OIDC: Using email: " . $email);
 
         // Get username from user data (use TCP Name field for Flarum username)
         $username = $userData['name'] ?? $userData['given_name'] ?? $userData['nickname'] ?? $userData['username'] ?? '';
@@ -225,9 +182,6 @@ class AuthController implements RequestHandlerInterface
         // Get avatar if available
         $avatar = $userData['picture'] ?? $userData['avatar'] ?? '';
 
-        error_log("TCP OIDC: Using username: " . $username);
-        error_log("TCP OIDC: Using org name: " . ($orgName ?? 'null'));
-
         try {
             // Add org name to the payload
             $payload = $user->toArray();
@@ -240,17 +194,12 @@ class AuthController implements RequestHandlerInterface
                 ->suggestUsername($username)
                 ->setPayload($payload);
             
-            // Note: Flarum doesn't support setting nicknames during registration
-            // The nickname will need to be set manually or through a separate process
-            
             // Only provide avatar if it's a valid URL
             if (!empty($avatar) && filter_var($avatar, FILTER_VALIDATE_URL)) {
                 $registration->provideAvatar($avatar);
             }
-                
-            error_log("TCP OIDC: Registration suggestions set successfully");
         } catch (\Exception $e) {
-            error_log("TCP OIDC: Error setting registration suggestions: " . $e->getMessage());
+            error_log("TCP OIDC: Failed to set registration suggestions - " . $e->getMessage());
             throw $e;
         }
     }
