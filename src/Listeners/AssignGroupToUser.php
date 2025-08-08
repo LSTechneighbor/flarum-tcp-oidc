@@ -53,16 +53,16 @@ class AssignGroupToUser
         // Minimal debug logging to avoid header size issues
         error_log("TCP OIDC: Processing user registration for provider: " . $provider);
         
-        // Set nickname from the payload if available
+        // Set display name from the payload if available
         if ($registration && method_exists($registration, 'getPayload')) {
             $payload = $registration->getPayload();
             if (is_array($payload)) {
-                // Try multiple fields for nickname (nickname, preferred_username, given_name, name)
-                $nickname = $payload['nickname'] ?? $payload['preferred_username'] ?? $payload['given_name'] ?? $payload['name'] ?? null;
+                // Try multiple fields for display name (nickname, preferred_username, given_name, name)
+                $displayName = $payload['nickname'] ?? $payload['preferred_username'] ?? $payload['given_name'] ?? $payload['name'] ?? null;
                 
-                if (!empty($nickname)) {
-                    $user->nickname = $nickname;
-                    error_log("TCP OIDC: Nickname set to: " . $nickname);
+                if (!empty($displayName)) {
+                    $user->display_name = $displayName;
+                    error_log("TCP OIDC: Display name set to: " . $displayName);
                 }
             }
         }
