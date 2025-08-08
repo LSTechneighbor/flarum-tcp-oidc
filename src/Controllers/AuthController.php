@@ -139,64 +139,13 @@ class AuthController implements RequestHandlerInterface
 
             error_log("TCP OIDC: User data received successfully");
         
-            // ===== COMPREHENSIVE USER DATA DEBUG LOGGING =====
-            error_log("TCP OIDC: ===== RAW USER DATA FROM OIDC PROVIDER =====");
-            
-            // Log the complete user data array
-            $userData = $user->toArray();
-            
-            // Write complete user data to a more accessible location
-            $debugFile = '/var/log/tcp_oidc_debug.json';
-            file_put_contents($debugFile, json_encode($userData, JSON_PRETTY_PRINT));
-            error_log("TCP OIDC: Complete user data written to: " . $debugFile);
-            
-            // Log each field individually to avoid truncation
-            error_log("TCP OIDC: === USER DATA FIELDS ===");
-            foreach ($userData as $key => $value) {
-                if (is_array($value) || is_object($value)) {
-                    error_log("TCP OIDC: {$key}: " . json_encode($value));
-                } else {
-                    error_log("TCP OIDC: {$key}: " . $value);
-                }
-            }
-            error_log("TCP OIDC: === END USER DATA FIELDS ===");
-            
-            // Log individual fields that might be relevant
-            $fieldsToCheck = [
-                'sub', 'id', 'email', 'email_address', 'mail', 'name', 'given_name', 
-                'family_name', 'nickname', 'preferred_username', 'username', 'picture', 
-                'avatar', 'org', 'organization', 'org_name', 'groups', 'roles', 
-                'profile', 'website', 'locale', 'zoneinfo', 'updated_at'
-            ];
-            
-            foreach ($fieldsToCheck as $field) {
-                if (isset($userData[$field])) {
-                    error_log("TCP OIDC: Field '{$field}': " . json_encode($userData[$field]));
-                }
-            }
-            
-            // Log user object methods if available
-            if (method_exists($user, 'getId')) {
-                error_log("TCP OIDC: User ID (getId): " . $user->getId());
-            }
-            if (method_exists($user, 'getEmail')) {
-                error_log("TCP OIDC: User Email (getEmail): " . $user->getEmail());
-            }
-            if (method_exists($user, 'getName')) {
-                error_log("TCP OIDC: User Name (getName): " . $user->getName());
-            }
-            if (method_exists($user, 'getNickname')) {
-                error_log("TCP OIDC: User Nickname (getNickname): " . $user->getNickname());
-            }
-            
-            // Log token information
-            error_log("TCP OIDC: Token class: " . get_class($token));
-            if (method_exists($token, 'getValues')) {
-                error_log("TCP OIDC: Token values: " . json_encode($token->getValues()));
-            }
-            
-            error_log("TCP OIDC: ===== END RAW USER DATA DEBUG =====");
-            // ===== END COMPREHENSIVE DEBUG LOGGING =====
+            // Get user data array for processing
+        $userData = $user->toArray();
+        
+        // Optional: Write user data to file for debugging (comment out in production)
+        // $debugFile = '/tmp/tcp_oidc_user_data_' . date('Y-m-d_H-i-s') . '.json';
+        // file_put_contents($debugFile, json_encode($userData, JSON_PRETTY_PRINT));
+        // error_log("TCP OIDC: User data written to: " . $debugFile);
         
             // Get user data array to access email and name
             $email = $userData['email'] ?? $userData['email_address'] ?? $userData['mail'] ?? null;
