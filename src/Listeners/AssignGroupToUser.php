@@ -1,9 +1,9 @@
 <?php
 
 /*
- * This file is part of fof/oauth.
+ * This file is part of lstechneighbor/flarum-tcp-oidc.
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) LSTechNeighbor.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -14,7 +14,15 @@ namespace LSTechNeighbor\TCPOIDC\Listeners;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\Event\RegisteringFromProvider;
 use Flarum\User\User;
+use Illuminate\Support\Arr;
 
+/**
+ * Listener to handle user registration from OIDC provider.
+ * 
+ * This listener:
+ * - Assigns users to configured groups based on their provider
+ * - Sets user nickname from OIDC payload data
+ */
 class AssignGroupToUser
 {
     /**
@@ -31,89 +39,98 @@ class AssignGroupToUser
     }
 
     /**
+     * Handle the RegisteringFromProvider event.
+     *
      * @param RegisteringFromProvider $event
      */
     public function handle(RegisteringFromProvider $event)
     {
-        error_log('TCP OIDC: Processing user registration for provider: ' . $event->provider);
-        
-        // The RegisteringFromProvider event has different properties
-        // Let's check what's available in the event
-        $eventProperties = get_object_vars($event);
-        error_log('TCP OIDC: Event properties: ' . json_encode(array_keys($eventProperties)));
-        
-        // Try to access user and payload from different possible properties
-        $user = null;
-        $payload = null;
-        
-        if (isset($event->user)) {
-            $user = $event->user;
-        }
-        
-        if (isset($event->payload)) {
-            $payload = $event->payload;
-        } elseif (isset($event->data)) {
-            $payload = $event->data;
-        } elseif (isset($event->suggestions)) {
-            $payload = $event->suggestions;
-        }
-        
-        error_log('TCP OIDC: User object available: ' . ($user ? 'yes' : 'no'));
-        error_log('TCP OIDC: Payload available: ' . ($payload ? 'yes' : 'no'));
+        $user = $this->extractUser($event);
+        $payload = $this->extractPayload($event);
         
         if (!$user || !$payload) {
-            error_log('TCP OIDC: Missing user or payload data');
             return;
         }
 
-        $provider = $event->provider;
+        $this->assignUserToGroup($user, $event->provider);
+        $this->setUserNickname($user, $payload);
+    }
 
-        // Get the group ID for this provider
-        $groupId = $this->settings->get("lstechneighbor-tcp-oidc.{$provider}.group");
+    /**
+     * Extract user object from the event.
+     *
+     * @param RegisteringFromProvider $event
+     * @return User|null
+     */
+    private function extractUser(RegisteringFromProvider $event): ?User
+    {
+        return $event->user ?? null;
+    }
 
-        // If a group is specified, assign it to the user
-        if ($groupId && is_numeric($groupId)) {
-            $user->afterSave(function (User $user) use ($groupId) {
-                // Attach the group to the user
-                $user->groups()->attach($groupId);
-            });
+    /**
+     * Extract payload data from the event.
+     *
+     * @param RegisteringFromProvider $event
+     * @return array|null
+     */
+    private function extractPayload(RegisteringFromProvider $event): ?array
+    {
+        $payload = $event->payload ?? $event->data ?? $event->suggestions ?? null;
+        
+        if (!$payload) {
+            return null;
         }
         
-        error_log('TCP OIDC: Payload type: ' . gettype($payload));
-        error_log('TCP OIDC: Payload contents: ' . json_encode($payload));
-        
-        if (!is_array($payload) && !is_object($payload)) {
-            error_log('TCP OIDC: Invalid payload type');
-            return;
-        }
-        
-        // Convert object to array for easier handling
+        // Convert object to array for consistent handling
         if (is_object($payload)) {
             $payload = (array) $payload;
         }
         
-        if (is_array($payload)) {
-            error_log('TCP OIDC: Available payload fields: ' . implode(', ', array_keys($payload)));
-            // Try multiple fields for display name (nickname, preferred_username, given_name, name)
-            $displayName = $payload['nickname'] ?? $payload['preferred_username'] ?? $payload['given_name'] ?? $payload['name'] ?? null;
+        return is_array($payload) ? $payload : null;
+    }
+
+    /**
+     * Assign user to the configured group for the provider.
+     *
+     * @param User $user
+     * @param string $provider
+     */
+    private function assignUserToGroup(User $user, string $provider): void
+    {
+        $groupId = $this->settings->get("lstechneighbor-tcp-oidc.{$provider}.group");
+
+        if ($groupId && is_numeric($groupId)) {
+            $user->afterSave(function (User $user) use ($groupId) {
+                $user->groups()->syncWithoutDetaching([$groupId]);
+            });
+        }
+    }
+
+    /**
+     * Set user nickname from OIDC payload.
+     *
+     * @param User $user
+     * @param array $payload
+     */
+    private function setUserNickname(User $user, array $payload): void
+    {
+        // Priority order for nickname fields
+        $nicknameFields = ['nickname', 'preferred_username', 'given_name', 'name'];
+        
+        $displayName = Arr::first($nicknameFields, function ($field) use ($payload) {
+            return !empty($payload[$field]);
+        });
+        
+        if ($displayName && !empty($payload[$displayName])) {
+            $user->nickname = $payload[$displayName];
             
-            if (!empty($displayName)) {
-                 $user->nickname = $displayName;
-                 error_log('TCP OIDC: Nickname set to: ' . $displayName);
-                 
-                 // Save the user to ensure the nickname is persisted
-                 $user->afterSave(function (User $user) use ($displayName) {
-                     if (empty($user->nickname)) {
-                         $user->nickname = $displayName;
-                         $user->save();
-                         error_log('TCP OIDC: Nickname saved in afterSave: ' . $displayName);
-                     }
-                 });
-            } else {
-                error_log('TCP OIDC: No suitable nickname found in payload');
-            }
-        } else {
-            error_log('TCP OIDC: Payload is not an array');
+            // Ensure nickname is persisted
+            $user->afterSave(function (User $user) use ($payload, $displayName) {
+                if (empty($user->nickname)) {
+                    $user->nickname = $payload[$displayName];
+                    $user->save();
+                }
+            });
         }
     }
 }
